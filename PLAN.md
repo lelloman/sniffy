@@ -53,14 +53,14 @@ This document contains every single task in the exact sequence they should be im
 - [x] Add unit tests for stats combining and totaling
 
 ### 2.2 Error Types (src/error.rs)
-- [ ] Define custom error enum `SniffyError`
-- [ ] Add variant for IO errors
-- [ ] Add variant for invalid path errors
-- [ ] Add variant for encoding errors
-- [ ] Add variant for file processing errors
-- [ ] Implement `Display` trait for `SniffyError`
-- [ ] Implement `From<std::io::Error>` for `SniffyError`
-- [ ] Create type alias `Result<T> = std::result::Result<T, SniffyError>`
+- [x] Define custom error enum `SniffyError`
+- [x] Add variant for IO errors
+- [x] Add variant for invalid path errors
+- [x] Add variant for encoding errors
+- [x] Add variant for file processing errors
+- [x] Implement `Display` trait for `SniffyError`
+- [x] Implement `From<std::io::Error>` for `SniffyError`
+- [x] Create type alias `Result<T> = std::result::Result<T, SniffyError>`
 
 ---
 
