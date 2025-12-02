@@ -494,28 +494,28 @@ This document contains every single task in the exact sequence they should be im
 - [ ] Document limitations and trade-offs
 
 ### 12.3 Additional Languages
-- [ ] Add Kotlin support (.kt, .kts)
-- [ ] Add Swift support (.swift)
-- [ ] Add Scala support (.scala)
-- [ ] Add Elixir support (.ex, .exs)
-- [ ] Add Erlang support (.erl)
-- [ ] Add Haskell support (.hs)
-- [ ] Add Lua support (.lua)
-- [ ] Add Perl support (.pl, .pm)
-- [ ] Add R support (.r, .R)
-- [ ] Add SQL support (.sql)
-- [ ] Add Dockerfile support (Dockerfile, *.dockerfile)
-- [ ] Add Makefile support (Makefile, *.mk)
-- [ ] Add TOML support (.toml)
-- [ ] Add INI support (.ini, .cfg)
-- [ ] Add Vim script support (.vim)
-- [ ] Add Bash/Zsh support improvements
-- [ ] Test each language with fixtures
+- [x] Add Kotlin support (.kt, .kts)
+- [x] Add Swift support (.swift)
+- [x] Add Scala support (.scala)
+- [x] Add Elixir support (.ex, .exs)
+- [x] Add Erlang support (.erl)
+- [x] Add Haskell support (.hs)
+- [x] Add Lua support (.lua)
+- [x] Add Perl support (.pl, .pm)
+- [x] Add R support (.r, .R)
+- [x] Add SQL support (.sql)
+- [ ] Add Dockerfile support (Dockerfile, *.dockerfile) - requires special handling for no extension
+- [ ] Add Makefile support (Makefile, *.mk) - requires special handling for no extension
+- [x] Add TOML support (.toml)
+- [x] Add INI support (.ini, .cfg)
+- [x] Add Vim script support (.vim)
+- [x] Add Bash/Zsh support improvements (already have .sh, .bash, .zsh)
+- [ ] Test each language with fixtures (deferred)
 
 ### 12.4 Colorized Output
-- [ ] Add dependency: `colored = "2"` or `termcolor = "1"`
-- [ ] Add color to table headers
-- [ ] Color-code numbers (green for high, red for low)
+- [x] Add dependency: `colored = "2"` or `termcolor = "1"` (using comfy-table's built-in colors)
+- [x] Add color to table headers (cyan)
+- [x] Color-code numbers (green for totals)
 - [ ] Add CLI flag `--no-color` to disable colors
 - [ ] Respect NO_COLOR environment variable
 - [ ] Test color output in different terminals

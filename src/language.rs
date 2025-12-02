@@ -186,6 +186,97 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &["//", "#"],
         &[CommentPair::new("/*", "*/")],
     ),
+    // Kotlin
+    LanguageInfo::new(
+        "Kotlin",
+        &["kt", "kts"],
+        &["//"],
+        &[CommentPair::new("/*", "*/")],
+    ),
+    // Swift
+    LanguageInfo::new(
+        "Swift",
+        &["swift"],
+        &["//"],
+        &[CommentPair::new("/*", "*/")],
+    ),
+    // Scala
+    LanguageInfo::new(
+        "Scala",
+        &["scala"],
+        &["//"],
+        &[CommentPair::new("/*", "*/")],
+    ),
+    // Elixir
+    LanguageInfo::new(
+        "Elixir",
+        &["ex", "exs"],
+        &["#"],
+        &[],
+    ),
+    // Erlang
+    LanguageInfo::new(
+        "Erlang",
+        &["erl", "hrl"],
+        &["%"],
+        &[],
+    ),
+    // Haskell
+    LanguageInfo::new(
+        "Haskell",
+        &["hs", "lhs"],
+        &["--"],
+        &[CommentPair::new("{-", "-}")],
+    ),
+    // Lua
+    LanguageInfo::new(
+        "Lua",
+        &["lua"],
+        &["--"],
+        &[CommentPair::new("--[[", "]]")],
+    ),
+    // Perl
+    LanguageInfo::new(
+        "Perl",
+        &["pl", "pm"],
+        &["#"],
+        &[CommentPair::new("=pod", "=cut")],
+    ),
+    // R
+    LanguageInfo::new(
+        "R",
+        &["r", "R"],
+        &["#"],
+        &[],
+    ),
+    // SQL
+    LanguageInfo::new(
+        "SQL",
+        &["sql"],
+        &["--"],
+        &[CommentPair::new("/*", "*/")],
+    ),
+    // TOML
+    LanguageInfo::new(
+        "TOML",
+        &["toml"],
+        &["#"],
+        &[],
+    ),
+    // INI
+    LanguageInfo::new(
+        "INI",
+        &["ini", "cfg"],
+        &[";", "#"],
+        &[],
+    ),
+    // Vim Script
+    LanguageInfo::new(
+        "Vim Script",
+        &["vim"],
+        &["\""],
+        &[],
+    ),
 ];
 
 /// Language detector that maps file extensions to languages.

@@ -3,7 +3,7 @@
 //! This module handles formatting statistics as tables
 //! and other output formats for the terminal.
 
-use crate::stats::{FileStats, ProjectStats};
+use crate::stats::ProjectStats;
 use comfy_table::{presets::UTF8_FULL, Cell, Color, ContentArrangement, Table};
 
 /// Output formatter for displaying statistics.
