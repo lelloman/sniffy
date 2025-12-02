@@ -78,13 +78,14 @@ impl ProjectStats {
 
     /// Add file statistics for a specific language.
     pub fn add_file_stats(&mut self, language: &str, stats: FileStats) {
-        let lang_stats = self.languages.entry(language.to_string()).or_insert_with(|| {
-            LanguageStats {
+        let lang_stats = self
+            .languages
+            .entry(language.to_string())
+            .or_insert_with(|| LanguageStats {
                 language: language.to_string(),
                 files: 0,
                 stats: FileStats::default(),
-            }
-        });
+            });
         lang_stats.files += 1;
         lang_stats.stats += stats;
     }

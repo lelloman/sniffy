@@ -92,7 +92,8 @@ impl<'a> LineClassifier<'a> {
 
     /// Find the position of a multi-line comment end delimiter in a line.
     fn contains_multi_line_end(&self, line: &str, delimiter: &CommentPair) -> Option<usize> {
-        line.find(delimiter.end).map(|pos| pos + delimiter.end.len())
+        line.find(delimiter.end)
+            .map(|pos| pos + delimiter.end.len())
     }
 
     /// Classify a single line of code.
@@ -242,8 +243,14 @@ mod tests {
 
         assert_eq!(classifier.classify_line("", &mut state), LineType::Blank);
         assert_eq!(classifier.classify_line("   ", &mut state), LineType::Blank);
-        assert_eq!(classifier.classify_line("\t\t", &mut state), LineType::Blank);
-        assert_eq!(classifier.classify_line("  \t  ", &mut state), LineType::Blank);
+        assert_eq!(
+            classifier.classify_line("\t\t", &mut state),
+            LineType::Blank
+        );
+        assert_eq!(
+            classifier.classify_line("  \t  ", &mut state),
+            LineType::Blank
+        );
     }
 
     #[test]

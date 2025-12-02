@@ -1,5 +1,5 @@
-pub mod cli;
 pub mod classifier;
+pub mod cli;
 pub mod error;
 pub mod git;
 pub mod language;

@@ -4,7 +4,6 @@
 //! to track code changes over time.
 
 use crate::classifier::LineType;
-use crate::language::LanguageDetector;
 use crate::stats::FileStats;
 use chrono::{DateTime, NaiveDate, Utc};
 use git2::Repository;
@@ -59,8 +58,8 @@ impl HistoricalStats {
                 net_code: 0,
             });
 
-            week_stat.additions = week_stat.additions + daily.additions;
-            week_stat.deletions = week_stat.deletions + daily.deletions;
+            week_stat.additions += daily.additions;
+            week_stat.deletions += daily.deletions;
             week_stat.net_code += daily.net_code;
         }
 
@@ -74,7 +73,6 @@ impl HistoricalStats {
 /// Git repository analyzer.
 pub struct GitAnalyzer {
     repo: Repository,
-    detector: LanguageDetector,
 }
 
 impl GitAnalyzer {
@@ -83,10 +81,7 @@ impl GitAnalyzer {
     /// Returns None if the path is not in a git repository.
     pub fn new<P: AsRef<Path>>(path: P) -> Result<Self, git2::Error> {
         let repo = Repository::discover(path)?;
-        Ok(Self {
-            repo,
-            detector: LanguageDetector::new(),
-        })
+        Ok(Self { repo })
     }
 
     /// Check if a path is in a git repository.
@@ -95,7 +90,10 @@ impl GitAnalyzer {
     }
 
     /// Analyze commit history and return historical statistics.
-    pub fn analyze_history(&self, since: Option<DateTime<Utc>>) -> Result<HistoricalStats, git2::Error> {
+    pub fn analyze_history(
+        &self,
+        since: Option<DateTime<Utc>>,
+    ) -> Result<HistoricalStats, git2::Error> {
         let mut stats = HistoricalStats::default();
         let mut daily_map: HashMap<NaiveDate, DailyStats> = HashMap::new();
 
@@ -110,7 +108,7 @@ impl GitAnalyzer {
 
             // Filter by date if specified
             let commit_time = DateTime::from_timestamp(commit.time().seconds(), 0)
-                .unwrap_or_else(|| DateTime::UNIX_EPOCH);
+                .unwrap_or(DateTime::UNIX_EPOCH);
 
             if let Some(since_date) = since {
                 if commit_time < since_date {
@@ -134,8 +132,8 @@ impl GitAnalyzer {
                 net_code: 0,
             });
 
-            daily_stat.additions = daily_stat.additions + additions;
-            daily_stat.deletions = daily_stat.deletions + deletions;
+            daily_stat.additions += additions;
+            daily_stat.deletions += deletions;
             daily_stat.net_code += (additions.code as i64) - (deletions.code as i64);
 
             // Track by author - extract name to owned String to avoid lifetime issues
@@ -145,7 +143,7 @@ impl GitAnalyzer {
                     .by_author
                     .entry(author)
                     .or_insert_with(FileStats::default);
-                *author_stats = *author_stats + additions;
+                *author_stats += additions;
             }
         }
 
@@ -158,10 +156,7 @@ impl GitAnalyzer {
     }
 
     /// Analyze a single commit and return added/deleted line stats.
-    fn analyze_commit(
-        &self,
-        commit: &git2::Commit,
-    ) -> Result<(FileStats, FileStats), git2::Error> {
+    fn analyze_commit(&self, commit: &git2::Commit) -> Result<(FileStats, FileStats), git2::Error> {
         let mut additions = FileStats::default();
         let mut deletions = FileStats::default();
 
@@ -186,18 +181,9 @@ impl GitAnalyzer {
 
         // Process diff
         diff.foreach(
-            &mut |delta, _progress| {
-                // Get file path
-                if let Some(path) = delta.new_file().path() {
-                    // Detect language
-                    if self.detector.detect_from_path(path).is_some() {
-                        true // Continue processing
-                    } else {
-                        true // Skip unknown files but continue
-                    }
-                } else {
-                    true
-                }
+            &mut |_delta, _progress| {
+                // Continue processing all files
+                true
             },
             None,
             None,

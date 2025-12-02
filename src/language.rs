@@ -65,7 +65,10 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         "Python",
         &["py", "pyw"],
         &["#"],
-        &[CommentPair::new("\"\"\"", "\"\"\""), CommentPair::new("'''", "'''")],
+        &[
+            CommentPair::new("\"\"\"", "\"\"\""),
+            CommentPair::new("'''", "'''"),
+        ],
     ),
     // Rust
     LanguageInfo::new(
@@ -75,26 +78,11 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("/*", "*/")],
     ),
     // Go
-    LanguageInfo::new(
-        "Go",
-        &["go"],
-        &["//"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("Go", &["go"], &["//"], &[CommentPair::new("/*", "*/")]),
     // Java
-    LanguageInfo::new(
-        "Java",
-        &["java"],
-        &["//"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("Java", &["java"], &["//"], &[CommentPair::new("/*", "*/")]),
     // C
-    LanguageInfo::new(
-        "C",
-        &["c", "h"],
-        &["//"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("C", &["c", "h"], &["//"], &[CommentPair::new("/*", "*/")]),
     // C++
     LanguageInfo::new(
         "C++",
@@ -103,12 +91,7 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("/*", "*/")],
     ),
     // C#
-    LanguageInfo::new(
-        "C#",
-        &["cs"],
-        &["//"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("C#", &["cs"], &["//"], &[CommentPair::new("/*", "*/")]),
     // Ruby
     LanguageInfo::new(
         "Ruby",
@@ -117,12 +100,7 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("=begin", "=end")],
     ),
     // Shell
-    LanguageInfo::new(
-        "Shell",
-        &["sh", "bash", "zsh"],
-        &["#"],
-        &[],
-    ),
+    LanguageInfo::new("Shell", &["sh", "bash", "zsh"], &["#"], &[]),
     // HTML
     LanguageInfo::new(
         "HTML",
@@ -131,26 +109,11 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("<!--", "-->")],
     ),
     // CSS
-    LanguageInfo::new(
-        "CSS",
-        &["css"],
-        &[],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("CSS", &["css"], &[], &[CommentPair::new("/*", "*/")]),
     // SCSS
-    LanguageInfo::new(
-        "SCSS",
-        &["scss"],
-        &["//"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("SCSS", &["scss"], &["//"], &[CommentPair::new("/*", "*/")]),
     // Sass
-    LanguageInfo::new(
-        "Sass",
-        &["sass"],
-        &["//"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("Sass", &["sass"], &["//"], &[CommentPair::new("/*", "*/")]),
     // Markdown
     LanguageInfo::new(
         "Markdown",
@@ -159,26 +122,11 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("<!--", "-->")],
     ),
     // JSON
-    LanguageInfo::new(
-        "JSON",
-        &["json"],
-        &[],
-        &[],
-    ),
+    LanguageInfo::new("JSON", &["json"], &[], &[]),
     // YAML
-    LanguageInfo::new(
-        "YAML",
-        &["yaml", "yml"],
-        &["#"],
-        &[],
-    ),
+    LanguageInfo::new("YAML", &["yaml", "yml"], &["#"], &[]),
     // XML
-    LanguageInfo::new(
-        "XML",
-        &["xml"],
-        &[],
-        &[CommentPair::new("<!--", "-->")],
-    ),
+    LanguageInfo::new("XML", &["xml"], &[], &[CommentPair::new("<!--", "-->")]),
     // PHP
     LanguageInfo::new(
         "PHP",
@@ -208,19 +156,9 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("/*", "*/")],
     ),
     // Elixir
-    LanguageInfo::new(
-        "Elixir",
-        &["ex", "exs"],
-        &["#"],
-        &[],
-    ),
+    LanguageInfo::new("Elixir", &["ex", "exs"], &["#"], &[]),
     // Erlang
-    LanguageInfo::new(
-        "Erlang",
-        &["erl", "hrl"],
-        &["%"],
-        &[],
-    ),
+    LanguageInfo::new("Erlang", &["erl", "hrl"], &["%"], &[]),
     // Haskell
     LanguageInfo::new(
         "Haskell",
@@ -229,12 +167,7 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("{-", "-}")],
     ),
     // Lua
-    LanguageInfo::new(
-        "Lua",
-        &["lua"],
-        &["--"],
-        &[CommentPair::new("--[[", "]]")],
-    ),
+    LanguageInfo::new("Lua", &["lua"], &["--"], &[CommentPair::new("--[[", "]]")]),
     // Perl
     LanguageInfo::new(
         "Perl",
@@ -243,40 +176,15 @@ pub const LANGUAGES: &[LanguageInfo] = &[
         &[CommentPair::new("=pod", "=cut")],
     ),
     // R
-    LanguageInfo::new(
-        "R",
-        &["r", "R"],
-        &["#"],
-        &[],
-    ),
+    LanguageInfo::new("R", &["r", "R"], &["#"], &[]),
     // SQL
-    LanguageInfo::new(
-        "SQL",
-        &["sql"],
-        &["--"],
-        &[CommentPair::new("/*", "*/")],
-    ),
+    LanguageInfo::new("SQL", &["sql"], &["--"], &[CommentPair::new("/*", "*/")]),
     // TOML
-    LanguageInfo::new(
-        "TOML",
-        &["toml"],
-        &["#"],
-        &[],
-    ),
+    LanguageInfo::new("TOML", &["toml"], &["#"], &[]),
     // INI
-    LanguageInfo::new(
-        "INI",
-        &["ini", "cfg"],
-        &[";", "#"],
-        &[],
-    ),
+    LanguageInfo::new("INI", &["ini", "cfg"], &[";", "#"], &[]),
     // Vim Script
-    LanguageInfo::new(
-        "Vim Script",
-        &["vim"],
-        &["\""],
-        &[],
-    ),
+    LanguageInfo::new("Vim Script", &["vim"], &["\""], &[]),
 ];
 
 /// Language detector that maps file extensions to languages.
@@ -403,7 +311,11 @@ mod tests {
     #[test]
     fn test_all_languages_have_extensions() {
         for lang in LANGUAGES {
-            assert!(!lang.extensions.is_empty(), "Language {} has no extensions", lang.name);
+            assert!(
+                !lang.extensions.is_empty(),
+                "Language {} has no extensions",
+                lang.name
+            );
         }
     }
 }

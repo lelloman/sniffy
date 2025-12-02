@@ -69,8 +69,13 @@ impl Cli {
         }
 
         // Validate that history-related flags require --history
-        if !self.history && (self.since.is_some() || self.by_day || self.by_week || self.author.is_some()) {
-            return Err("History-related flags (--since, --by-day, --by-week, --author) require --history".to_string());
+        if !self.history
+            && (self.since.is_some() || self.by_day || self.by_week || self.author.is_some())
+        {
+            return Err(
+                "History-related flags (--since, --by-day, --by-week, --author) require --history"
+                    .to_string(),
+            );
         }
 
         // Validate format
