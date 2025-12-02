@@ -67,40 +67,40 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 3: Language System
 
 ### 3.1 Language Definition Structures (src/language.rs)
-- [ ] Define `CommentPair` struct with start and end delimiters
-- [ ] Define `LanguageInfo` struct with name, extensions, single_line_comments, multi_line_comments
-- [ ] Implement constructor method for `LanguageInfo`
+- [x] Define `CommentPair` struct with start and end delimiters
+- [x] Define `LanguageInfo` struct with name, extensions, single_line_comments, multi_line_comments
+- [x] Implement constructor method for `LanguageInfo`
 
 ### 3.2 Language Definitions (src/language.rs)
-- [ ] Create `LANGUAGES` static array containing all language definitions
-- [ ] Add JavaScript language definition (.js, .jsx)
-- [ ] Add TypeScript language definition (.ts, .tsx)
-- [ ] Add Python language definition (.py)
-- [ ] Add Rust language definition (.rs)
-- [ ] Add Go language definition (.go)
-- [ ] Add Java language definition (.java)
-- [ ] Add C language definition (.c, .h)
-- [ ] Add C++ language definition (.cpp, .cc, .cxx, .hpp, .hxx)
-- [ ] Add C# language definition (.cs)
-- [ ] Add Ruby language definition (.rb)
-- [ ] Add Shell language definition (.sh, .bash, .zsh)
-- [ ] Add HTML language definition (.html, .htm)
-- [ ] Add CSS language definition (.css)
-- [ ] Add SCSS/Sass language definition (.scss, .sass)
-- [ ] Add Markdown language definition (.md, .markdown)
-- [ ] Add JSON language definition (.json)
-- [ ] Add YAML language definition (.yaml, .yml)
-- [ ] Add XML language definition (.xml)
-- [ ] Add PHP language definition (.php)
+- [x] Create `LANGUAGES` static array containing all language definitions
+- [x] Add JavaScript language definition (.js, .jsx)
+- [x] Add TypeScript language definition (.ts, .tsx)
+- [x] Add Python language definition (.py)
+- [x] Add Rust language definition (.rs)
+- [x] Add Go language definition (.go)
+- [x] Add Java language definition (.java)
+- [x] Add C language definition (.c, .h)
+- [x] Add C++ language definition (.cpp, .cc, .cxx, .hpp, .hxx)
+- [x] Add C# language definition (.cs)
+- [x] Add Ruby language definition (.rb)
+- [x] Add Shell language definition (.sh, .bash, .zsh)
+- [x] Add HTML language definition (.html, .htm)
+- [x] Add CSS language definition (.css)
+- [x] Add SCSS/Sass language definition (.scss, .sass)
+- [x] Add Markdown language definition (.md, .markdown)
+- [x] Add JSON language definition (.json)
+- [x] Add YAML language definition (.yaml, .yml)
+- [x] Add XML language definition (.xml)
+- [x] Add PHP language definition (.php)
 
 ### 3.3 Language Detector (src/language.rs)
-- [ ] Create `LanguageDetector` struct
-- [ ] Implement `new()` that builds extension-to-language HashMap
-- [ ] Implement `detect_from_path()` method that takes a Path and returns Option<&LanguageInfo>
-- [ ] Handle case-insensitive extension matching
-- [ ] Add unit tests for language detection by extension
-- [ ] Test unknown extensions return None
-- [ ] Test case insensitivity (.RS vs .rs)
+- [x] Create `LanguageDetector` struct
+- [x] Implement `new()` that builds extension-to-language HashMap
+- [x] Implement `detect_from_path()` method that takes a Path and returns Option<&LanguageInfo>
+- [x] Handle case-insensitive extension matching
+- [x] Add unit tests for language detection by extension
+- [x] Test unknown extensions return None
+- [x] Test case insensitivity (.RS vs .rs)
 
 ---
 
