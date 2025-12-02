@@ -70,6 +70,10 @@ fn main() {
                 process::exit(1);
             }
         },
+        "csv" => {
+            let csv = OutputFormatter::format_csv(&project_stats);
+            println!("{}", csv);
+        }
         _ => {
             // Default to table format
             let table = OutputFormatter::format_table(&project_stats);
@@ -159,6 +163,10 @@ fn run_history_mode(cli: &Cli) {
                 process::exit(1);
             }
         },
+        "csv" => {
+            let csv = OutputFormatter::format_history_csv(&stats, &time_series, period_label);
+            println!("{}", csv);
+        }
         _ => {
             // Default to table format
             let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit);

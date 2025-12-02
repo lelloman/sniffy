@@ -257,6 +257,100 @@ impl OutputFormatter {
 
         serde_json::to_string_pretty(&output)
     }
+
+    /// Format project statistics as CSV.
+    pub fn format_csv(stats: &ProjectStats) -> String {
+        let mut output = String::new();
+
+        // Header
+        output.push_str("language,files,blank,comment,code,total\n");
+
+        // Data rows
+        let languages = stats.get_languages();
+        for lang_stats in &languages {
+            output.push_str(&format!(
+                "{},{},{},{},{},{}\n",
+                lang_stats.language,
+                lang_stats.files,
+                lang_stats.stats.blank,
+                lang_stats.stats.comment,
+                lang_stats.stats.code,
+                lang_stats.stats.total()
+            ));
+        }
+
+        // Total row
+        let (total_files, total_stats) = stats.total();
+        if !languages.is_empty() {
+            output.push_str(&format!(
+                "Total,{},{},{},{},{}\n",
+                total_files,
+                total_stats.blank,
+                total_stats.comment,
+                total_stats.code,
+                total_stats.total()
+            ));
+        }
+
+        output
+    }
+
+    /// Format git history as CSV.
+    pub fn format_history_csv(
+        stats: &HistoricalStats,
+        time_series: &[DailyStats],
+        period_label: &str,
+    ) -> String {
+        let mut output = String::new();
+
+        // Summary header
+        output.push_str(&format!(
+            "# Git History Analysis - {} Statistics\n",
+            period_label
+        ));
+        output.push_str(&format!("# Total Commits: {}\n\n", stats.total_commits));
+
+        // Time series data
+        output.push_str("date,additions_code,deletions_code,net_change\n");
+        for daily in time_series {
+            output.push_str(&format!(
+                "{},{},{},{}\n",
+                daily.date,
+                daily.additions.code,
+                daily.deletions.code,
+                if daily.net_code >= 0 {
+                    format!("+{}", daily.net_code)
+                } else {
+                    daily.net_code.to_string()
+                }
+            ));
+        }
+
+        // Author statistics
+        if !stats.by_author.is_empty() {
+            output.push_str("\n# Top Contributors\n");
+            output.push_str("author,code_lines,comments,total\n");
+
+            let mut authors: Vec<_> = stats.by_author.iter().collect();
+            authors.sort_by(|a, b| {
+                let total_a = a.1.code + a.1.comment + a.1.blank;
+                let total_b = b.1.code + b.1.comment + b.1.blank;
+                total_b.cmp(&total_a)
+            });
+
+            for (author, author_stats) in authors.iter().take(10) {
+                output.push_str(&format!(
+                    "{},{},{},{}\n",
+                    author,
+                    author_stats.code,
+                    author_stats.comment,
+                    author_stats.total()
+                ));
+            }
+        }
+
+        output
+    }
 }
 
 #[cfg(test)]
