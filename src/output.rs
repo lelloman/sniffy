@@ -3,6 +3,7 @@
 //! This module handles formatting statistics as tables
 //! and other output formats for the terminal.
 
+use crate::git::HistoricalStats;
 use crate::stats::ProjectStats;
 use comfy_table::{presets::UTF8_FULL, Cell, Color, ContentArrangement, Table};
 
@@ -73,11 +74,139 @@ impl OutputFormatter {
 
         result
     }
+
+    /// Format a signed number with thousand separators and +/- sign.
+    fn format_signed_number(n: i64) -> String {
+        let sign = if n >= 0 { "+" } else { "" };
+        let s = n.abs().to_string();
+        let chars: Vec<char> = s.chars().collect();
+        let mut result = String::new();
+
+        for (i, c) in chars.iter().enumerate() {
+            if i > 0 && (chars.len() - i) % 3 == 0 {
+                result.push(',');
+            }
+            result.push(*c);
+        }
+
+        format!("{}{}", sign, result)
+    }
+
+    /// Format git history statistics as a table.
+    pub fn format_history(stats: &HistoricalStats, limit: Option<usize>) -> String {
+        let mut output = String::new();
+
+        // Summary
+        output.push_str(&format!(
+            "Git History Analysis\n\
+             Total Commits: {}\n\
+             Date Range: {} to {}\n\n",
+            Self::format_number(stats.total_commits),
+            stats
+                .daily
+                .last()
+                .map(|d| d.date.to_string())
+                .unwrap_or_else(|| "N/A".to_string()),
+            stats
+                .daily
+                .first()
+                .map(|d| d.date.to_string())
+                .unwrap_or_else(|| "N/A".to_string())
+        ));
+
+        // Daily statistics table
+        if !stats.daily.is_empty() {
+            output.push_str("Daily Statistics:\n");
+            let mut table = Table::new();
+
+            table
+                .load_preset(UTF8_FULL)
+                .set_content_arrangement(ContentArrangement::Dynamic);
+
+            table.set_header(vec![
+                Cell::new("Date").fg(Color::Cyan),
+                Cell::new("Added").fg(Color::Cyan),
+                Cell::new("Deleted").fg(Color::Cyan),
+                Cell::new("Net Change").fg(Color::Cyan),
+            ]);
+
+            // Limit the number of rows if specified
+            let rows_to_show = limit.unwrap_or(stats.daily.len()).min(stats.daily.len());
+
+            for daily in stats.daily.iter().take(rows_to_show) {
+                let net_code = daily.net_code;
+                let net_cell = Cell::new(Self::format_signed_number(net_code));
+                let net_cell = if net_code > 0 {
+                    net_cell.fg(Color::Green)
+                } else if net_code < 0 {
+                    net_cell.fg(Color::Red)
+                } else {
+                    net_cell
+                };
+
+                table.add_row(vec![
+                    Cell::new(daily.date.to_string()),
+                    Cell::new(Self::format_number(daily.additions.code)).fg(Color::Green),
+                    Cell::new(Self::format_number(daily.deletions.code)).fg(Color::Red),
+                    net_cell,
+                ]);
+            }
+
+            output.push_str(&table.to_string());
+            output.push('\n');
+
+            if stats.daily.len() > rows_to_show {
+                output.push_str(&format!(
+                    "... and {} more days\n\n",
+                    stats.daily.len() - rows_to_show
+                ));
+            }
+        }
+
+        // Author statistics
+        if !stats.by_author.is_empty() {
+            output.push_str("Top Contributors:\n");
+            let mut table = Table::new();
+
+            table
+                .load_preset(UTF8_FULL)
+                .set_content_arrangement(ContentArrangement::Dynamic);
+
+            table.set_header(vec![
+                Cell::new("Author").fg(Color::Cyan),
+                Cell::new("Code Lines").fg(Color::Cyan),
+                Cell::new("Comments").fg(Color::Cyan),
+                Cell::new("Total").fg(Color::Cyan),
+            ]);
+
+            // Sort authors by total lines contributed
+            let mut authors: Vec<_> = stats.by_author.iter().collect();
+            authors.sort_by(|a, b| {
+                let total_a = a.1.code + a.1.comment + a.1.blank;
+                let total_b = b.1.code + b.1.comment + b.1.blank;
+                total_b.cmp(&total_a)
+            });
+
+            for (author, author_stats) in authors.iter().take(10) {
+                table.add_row(vec![
+                    Cell::new(author),
+                    Cell::new(Self::format_number(author_stats.code)),
+                    Cell::new(Self::format_number(author_stats.comment)),
+                    Cell::new(Self::format_number(author_stats.total())),
+                ]);
+            }
+
+            output.push_str(&table.to_string());
+        }
+
+        output
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::stats::FileStats;
 
     #[test]
     fn test_format_number() {
