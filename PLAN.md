@@ -236,24 +236,24 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 7: CLI Interface
 
 ### 7.1 CLI Structure (src/cli.rs)
-- [ ] Create `Cli` struct with clap derive macro
-- [ ] Add field `paths`: Vec<PathBuf> (default to current directory)
-- [ ] Add field `exclude`: Vec<String> for exclude patterns
-- [ ] Add field `hidden`: bool for including hidden files
-- [ ] Add field `languages`: Option<Vec<String>> to filter languages
-- [ ] Add field `sort_by`: enum (Language, Files, Lines) with default
-- [ ] Add field `verbose`: bool for verbose output
-- [ ] Add field `skip_generated`: bool (default false)
-- [ ] Add subcommand structure for future `history` command
-- [ ] Implement `parse()` method to parse arguments
+- [x] Create `Cli` struct with clap derive macro
+- [x] Add field `paths`: Vec<PathBuf> (default to current directory)
+- [ ] Add field `exclude`: Vec<String> for exclude patterns (skipped for MVP)
+- [x] Add field `hidden`: bool for including hidden files
+- [ ] Add field `languages`: Option<Vec<String>> to filter languages (skipped for MVP)
+- [ ] Add field `sort_by`: enum (Language, Files, Lines) with default (skipped for MVP)
+- [x] Add field `verbose`: bool for verbose output
+- [ ] Add field `skip_generated`: bool (default false) (skipped for MVP)
+- [ ] Add subcommand structure for future `history` command (skipped for MVP)
+- [x] Implement `parse()` method to parse arguments
 
 ### 7.2 CLI Validation (src/cli.rs)
-- [ ] Implement `validate()` method to check arguments
-- [ ] Validate that paths exist
-- [ ] Validate that paths are readable
-- [ ] Convert relative paths to absolute paths
-- [ ] Return errors for invalid arguments
-- [ ] Add unit tests for validation
+- [x] Implement `validate()` method to check arguments
+- [x] Validate that paths exist
+- [ ] Validate that paths are readable (done via error handling)
+- [ ] Convert relative paths to absolute paths (not needed)
+- [x] Return errors for invalid arguments
+- [ ] Add unit tests for validation (skipped for MVP)
 
 ---
 
