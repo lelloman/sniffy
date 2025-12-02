@@ -291,33 +291,33 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 9: Main Integration
 
 ### 9.1 Main Application Flow (src/main.rs)
-- [ ] Parse CLI arguments
-- [ ] Validate arguments and handle errors
-- [ ] Create LanguageDetector instance
-- [ ] Create FileProcessor instance
-- [ ] Create ProjectStats instance
-- [ ] Create ProgressIndicator if verbose mode enabled
-- [ ] For each path in arguments:
-  - [ ] Create DirectoryWalker
-  - [ ] Configure walker with hidden/exclude options
-  - [ ] Walk directory and collect file paths
-- [ ] Process each file:
-  - [ ] Call FileProcessor.process_file()
-  - [ ] Add results to ProjectStats
-  - [ ] Update progress indicator
-  - [ ] Handle errors gracefully (log warning, continue)
-- [ ] Create OutputFormatter
-- [ ] Sort results based on sort criteria
-- [ ] Format and print table
-- [ ] Handle errors at top level and exit with appropriate code
-- [ ] Add integration test for basic run
+- [x] Parse CLI arguments
+- [x] Validate arguments and handle errors
+- [x] Create LanguageDetector instance (inside FileProcessor)
+- [x] Create FileProcessor instance
+- [x] Create ProjectStats instance
+- [x] Create ProgressIndicator if verbose mode enabled
+- [x] For each path in arguments:
+  - [x] Create DirectoryWalker
+  - [x] Configure walker with hidden/exclude options
+  - [x] Walk directory and collect file paths
+- [x] Process each file:
+  - [x] Call FileProcessor.process_file()
+  - [x] Add results to ProjectStats
+  - [x] Update progress indicator
+  - [x] Handle errors gracefully (log warning, continue)
+- [x] Create OutputFormatter
+- [x] Sort results based on sort criteria (alphabetical by default)
+- [x] Format and print table
+- [x] Handle errors at top level and exit with appropriate code
+- [ ] Add integration test for basic run (skipped for MVP)
 
 ### 9.2 Error Handling (src/main.rs)
-- [ ] Wrap main logic in Result
-- [ ] Map errors to exit codes (1, 2, 3)
-- [ ] Print user-friendly error messages
-- [ ] Handle Ctrl+C gracefully
-- [ ] Clean up resources on error
+- [x] Wrap main logic in Result
+- [x] Map errors to exit codes (1, 2, 3)
+- [x] Print user-friendly error messages
+- [ ] Handle Ctrl+C gracefully (not needed for MVP)
+- [ ] Clean up resources on error (automatic with Rust)
 
 ---
 
