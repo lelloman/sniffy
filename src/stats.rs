@@ -3,11 +3,12 @@
 //! This module defines data structures for tracking code statistics
 //! and methods for aggregating them across files and languages.
 
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::ops::{Add, AddAssign};
 
 /// Statistics for a single file or aggregated files.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FileStats {
     /// Number of blank lines.
     pub blank: usize,
@@ -50,7 +51,7 @@ impl AddAssign for FileStats {
 }
 
 /// Statistics for a specific programming language.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LanguageStats {
     /// Name of the language.
     pub language: String,
@@ -61,7 +62,7 @@ pub struct LanguageStats {
 }
 
 /// Statistics for an entire project.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct ProjectStats {
     /// Map from language name to language statistics.
     languages: HashMap<String, LanguageStats>,

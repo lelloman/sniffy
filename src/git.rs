@@ -8,11 +8,12 @@ use crate::language::LanguageDetector;
 use crate::stats::FileStats;
 use chrono::{DateTime, NaiveDate, Utc};
 use git2::Repository;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
 
 /// Daily statistics for git commits.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DailyStats {
     pub date: NaiveDate,
     pub additions: FileStats,
@@ -21,7 +22,7 @@ pub struct DailyStats {
 }
 
 /// Historical statistics aggregated from git history.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct HistoricalStats {
     pub daily: Vec<DailyStats>,
     pub by_author: HashMap<String, FileStats>,

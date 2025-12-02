@@ -43,6 +43,10 @@ pub struct Cli {
     /// Filter commits by author name
     #[arg(long, value_name = "NAME")]
     pub author: Option<String>,
+
+    /// Output format (table, json, or csv)
+    #[arg(long, default_value = "table", value_name = "FORMAT")]
+    pub format: String,
 }
 
 impl Cli {
@@ -67,6 +71,15 @@ impl Cli {
         // Validate that history-related flags require --history
         if !self.history && (self.since.is_some() || self.by_day || self.by_week || self.author.is_some()) {
             return Err("History-related flags (--since, --by-day, --by-week, --author) require --history".to_string());
+        }
+
+        // Validate format
+        let format_lower = self.format.to_lowercase();
+        if !["table", "json", "csv"].contains(&format_lower.as_str()) {
+            return Err(format!(
+                "Invalid format '{}'. Supported formats: table, json, csv",
+                self.format
+            ));
         }
 
         Ok(())

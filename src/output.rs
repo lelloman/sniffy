@@ -3,9 +3,10 @@
 //! This module handles formatting statistics as tables
 //! and other output formats for the terminal.
 
-use crate::git::HistoricalStats;
+use crate::git::{DailyStats, HistoricalStats};
 use crate::stats::ProjectStats;
 use comfy_table::{presets::UTF8_FULL, Cell, Color, ContentArrangement, Table};
+use serde::Serialize;
 
 /// Output formatter for displaying statistics.
 pub struct OutputFormatter;
@@ -210,6 +211,51 @@ impl OutputFormatter {
         }
 
         output
+    }
+
+    /// Format project statistics as JSON.
+    pub fn format_json(stats: &ProjectStats) -> Result<String, serde_json::Error> {
+        #[derive(Serialize)]
+        struct JsonOutput {
+            languages: Vec<crate::stats::LanguageStats>,
+            total_files: usize,
+            total_stats: crate::stats::FileStats,
+        }
+
+        let languages = stats.get_languages().into_iter().cloned().collect();
+        let (total_files, total_stats) = stats.total();
+
+        let output = JsonOutput {
+            languages,
+            total_files,
+            total_stats,
+        };
+
+        serde_json::to_string_pretty(&output)
+    }
+
+    /// Format git history as JSON.
+    pub fn format_history_json(
+        stats: &HistoricalStats,
+        time_series: &[DailyStats],
+        period_label: &str,
+    ) -> Result<String, serde_json::Error> {
+        #[derive(Serialize)]
+        struct JsonHistoryOutput {
+            total_commits: usize,
+            period: String,
+            time_series: Vec<DailyStats>,
+            by_author: std::collections::HashMap<String, crate::stats::FileStats>,
+        }
+
+        let output = JsonHistoryOutput {
+            total_commits: stats.total_commits,
+            period: period_label.to_lowercase(),
+            time_series: time_series.to_vec(),
+            by_author: stats.by_author.clone(),
+        };
+
+        serde_json::to_string_pretty(&output)
     }
 }
 

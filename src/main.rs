@@ -60,9 +60,22 @@ fn main() {
         );
     }
 
-    // Format and print results
-    let table = OutputFormatter::format_table(&project_stats);
-    println!("{}", table);
+    // Format and print results based on format option
+    let format_lower = cli.format.to_lowercase();
+    match format_lower.as_str() {
+        "json" => match OutputFormatter::format_json(&project_stats) {
+            Ok(json) => println!("{}", json),
+            Err(e) => {
+                eprintln!("Error formatting JSON: {}", e);
+                process::exit(1);
+            }
+        },
+        _ => {
+            // Default to table format
+            let table = OutputFormatter::format_table(&project_stats);
+            println!("{}", table);
+        }
+    }
 }
 
 fn run_history_mode(cli: &Cli) {
@@ -136,7 +149,20 @@ fn run_history_mode(cli: &Cli) {
         (stats.daily.clone(), "Daily", Some(30)) // Show last 30 days by default
     };
 
-    // Format and print results
-    let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit);
-    println!("{}", output);
+    // Format and print results based on format option
+    let format_lower = cli.format.to_lowercase();
+    match format_lower.as_str() {
+        "json" => match OutputFormatter::format_history_json(&stats, &time_series, period_label) {
+            Ok(json) => println!("{}", json),
+            Err(e) => {
+                eprintln!("Error formatting JSON: {}", e);
+                process::exit(1);
+            }
+        },
+        _ => {
+            // Default to table format
+            let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit);
+            println!("{}", output);
+        }
+    }
 }
