@@ -28,6 +28,48 @@ pub struct HistoricalStats {
     pub total_commits: usize,
 }
 
+impl HistoricalStats {
+    /// Aggregate daily statistics by week (Monday-Sunday).
+    /// Returns a new vector of DailyStats where each entry represents a week.
+    pub fn aggregate_by_week(&self) -> Vec<DailyStats> {
+        use chrono::Datelike;
+
+        if self.daily.is_empty() {
+            return Vec::new();
+        }
+
+        let mut weekly: HashMap<(i32, u32), DailyStats> = HashMap::new();
+
+        for daily in &self.daily {
+            // Get the ISO week number and year
+            let iso_week = daily.date.iso_week();
+            let year = iso_week.year();
+            let week = iso_week.week();
+            let key = (year, week);
+
+            // Get the Monday of this week as the representative date
+            let week_start = chrono::NaiveDate::from_isoywd_opt(year, week, chrono::Weekday::Mon)
+                .unwrap_or(daily.date);
+
+            let week_stat = weekly.entry(key).or_insert_with(|| DailyStats {
+                date: week_start,
+                additions: FileStats::default(),
+                deletions: FileStats::default(),
+                net_code: 0,
+            });
+
+            week_stat.additions = week_stat.additions + daily.additions;
+            week_stat.deletions = week_stat.deletions + daily.deletions;
+            week_stat.net_code += daily.net_code;
+        }
+
+        // Convert to sorted vec
+        let mut result: Vec<_> = weekly.into_values().collect();
+        result.sort_by(|a, b| b.date.cmp(&a.date)); // Most recent first
+        result
+    }
+}
+
 /// Git repository analyzer.
 pub struct GitAnalyzer {
     repo: Repository,

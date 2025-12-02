@@ -93,7 +93,13 @@ impl OutputFormatter {
     }
 
     /// Format git history statistics as a table.
-    pub fn format_history(stats: &HistoricalStats, limit: Option<usize>) -> String {
+    /// The `period_label` parameter can be "Daily" or "Weekly".
+    pub fn format_history(
+        stats: &HistoricalStats,
+        time_series: &[crate::git::DailyStats],
+        period_label: &str,
+        limit: Option<usize>,
+    ) -> String {
         let mut output = String::new();
 
         // Summary
@@ -102,21 +108,19 @@ impl OutputFormatter {
              Total Commits: {}\n\
              Date Range: {} to {}\n\n",
             Self::format_number(stats.total_commits),
-            stats
-                .daily
+            time_series
                 .last()
                 .map(|d| d.date.to_string())
                 .unwrap_or_else(|| "N/A".to_string()),
-            stats
-                .daily
+            time_series
                 .first()
                 .map(|d| d.date.to_string())
                 .unwrap_or_else(|| "N/A".to_string())
         ));
 
-        // Daily statistics table
-        if !stats.daily.is_empty() {
-            output.push_str("Daily Statistics:\n");
+        // Time series statistics table
+        if !time_series.is_empty() {
+            output.push_str(&format!("{} Statistics:\n", period_label));
             let mut table = Table::new();
 
             table
@@ -131,9 +135,9 @@ impl OutputFormatter {
             ]);
 
             // Limit the number of rows if specified
-            let rows_to_show = limit.unwrap_or(stats.daily.len()).min(stats.daily.len());
+            let rows_to_show = limit.unwrap_or(time_series.len()).min(time_series.len());
 
-            for daily in stats.daily.iter().take(rows_to_show) {
+            for daily in time_series.iter().take(rows_to_show) {
                 let net_code = daily.net_code;
                 let net_cell = Cell::new(Self::format_signed_number(net_code));
                 let net_cell = if net_code > 0 {
@@ -155,10 +159,16 @@ impl OutputFormatter {
             output.push_str(&table.to_string());
             output.push('\n');
 
-            if stats.daily.len() > rows_to_show {
+            if time_series.len() > rows_to_show {
+                let period_name = if period_label == "Weekly" {
+                    "weeks"
+                } else {
+                    "days"
+                };
                 output.push_str(&format!(
-                    "... and {} more days\n\n",
-                    stats.daily.len() - rows_to_show
+                    "... and {} more {}\n\n",
+                    time_series.len() - rows_to_show,
+                    period_name
                 ));
             }
         }

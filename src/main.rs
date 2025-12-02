@@ -128,15 +128,15 @@ fn run_history_mode(cli: &Cli) {
         stats
     };
 
-    // Determine display limit (default to 30 days)
-    let limit = if cli.by_week {
-        // TODO: Implement weekly aggregation in future
-        Some(30)
+    // Aggregate by week if requested
+    let (time_series, period_label, limit) = if cli.by_week {
+        let weekly = stats.aggregate_by_week();
+        (weekly, "Weekly", Some(12)) // Show last 12 weeks by default
     } else {
-        Some(30) // Show last 30 days by default
+        (stats.daily.clone(), "Daily", Some(30)) // Show last 30 days by default
     };
 
     // Format and print results
-    let output = OutputFormatter::format_history(&stats, limit);
+    let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit);
     println!("{}", output);
 }
