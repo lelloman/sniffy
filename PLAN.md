@@ -38,19 +38,19 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 2: Core Data Structures
 
 ### 2.1 Statistics Data Structures (src/stats.rs)
-- [ ] Define `FileStats` struct with fields: blank, comment, code
-- [ ] Implement `Default` trait for `FileStats`
-- [ ] Implement `total()` method for `FileStats`
-- [ ] Implement `Add` trait for `FileStats` to allow combining stats
-- [ ] Implement `AddAssign` trait for `FileStats`
-- [ ] Define `LanguageStats` struct with fields: language, files, stats
-- [ ] Implement `Default` trait for `LanguageStats`
-- [ ] Define `ProjectStats` struct with HashMap<String, LanguageStats>
-- [ ] Implement `new()` constructor for `ProjectStats`
-- [ ] Implement `add_file_stats()` method to add stats for a language
-- [ ] Implement `get_languages()` method to return sorted list of languages
-- [ ] Implement `total()` method to calculate totals across all languages
-- [ ] Add unit tests for stats combining and totaling
+- [x] Define `FileStats` struct with fields: blank, comment, code
+- [x] Implement `Default` trait for `FileStats`
+- [x] Implement `total()` method for `FileStats`
+- [x] Implement `Add` trait for `FileStats` to allow combining stats
+- [x] Implement `AddAssign` trait for `FileStats`
+- [x] Define `LanguageStats` struct with fields: language, files, stats
+- [x] Implement `Default` trait for `LanguageStats`
+- [x] Define `ProjectStats` struct with HashMap<String, LanguageStats>
+- [x] Implement `new()` constructor for `ProjectStats`
+- [x] Implement `add_file_stats()` method to add stats for a language
+- [x] Implement `get_languages()` method to return sorted list of languages
+- [x] Implement `total()` method to calculate totals across all languages
+- [x] Add unit tests for stats combining and totaling
 
 ### 2.2 Error Types (src/error.rs)
 - [ ] Define custom error enum `SniffyError`
