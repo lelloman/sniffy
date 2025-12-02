@@ -193,15 +193,15 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 6: Directory Walking
 
 ### 6.1 Basic Walker (src/walker.rs)
-- [ ] Create `DirectoryWalker` struct
-- [ ] Add field `builder` for ignore::WalkBuilder
-- [ ] Add field `hidden` flag for including hidden files
-- [ ] Implement `new()` constructor that takes a path
-- [ ] Configure WalkBuilder to respect .gitignore by default
-- [ ] Implement `hidden()` method to configure hidden file inclusion
-- [ ] Implement `walk()` method that returns an iterator of paths
-- [ ] Filter out directories (only return files)
-- [ ] Handle errors during walking (permission denied, etc.)
+- [x] Create `DirectoryWalker` struct
+- [x] Add field `builder` for ignore::WalkBuilder
+- [x] Add field `hidden` flag for including hidden files
+- [x] Implement `new()` constructor that takes a path
+- [x] Configure WalkBuilder to respect .gitignore by default
+- [x] Implement `hidden()` method to configure hidden file inclusion
+- [x] Implement `walk()` method that returns an iterator of paths
+- [x] Filter out directories (only return files)
+- [x] Handle errors during walking (permission denied, etc.)
 
 ### 6.2 File Filtering (src/walker.rs)
 - [ ] Add common skip patterns to walker:
