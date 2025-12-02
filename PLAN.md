@@ -115,49 +115,49 @@ This document contains every single task in the exact sequence they should be im
 - [x] Implement `reset()` method to reset state
 
 ### 4.2 Line Classification Logic (src/classifier.rs)
-- [ ] Create `LineClassifier` struct
-- [ ] Implement `new()` constructor that takes a reference to `LanguageInfo`
-- [ ] Create helper method `trim_line()` to trim whitespace
-- [ ] Create helper method `is_blank()` to check if line is blank
-- [ ] Create helper method `starts_with_single_comment()` to check single-line comments
-- [ ] Create helper method `contains_multi_line_start()` to find multi-line start delimiters
-- [ ] Create helper method `contains_multi_line_end()` to find multi-line end delimiters
-- [ ] Create helper method `find_delimiter_position()` to locate delimiter in line
-- [ ] Implement main `classify_line()` method that takes a line and state, returns LineType
-- [ ] Handle blank line detection (first check)
-- [ ] Handle case: already in multi-line comment
-  - [ ] Check if line contains end delimiter
-  - [ ] If end found, check if there's code after the delimiter
-  - [ ] If code after delimiter, return Code and update state
-  - [ ] If no code after delimiter, return Comment and update state
-  - [ ] If no end delimiter, return Comment (stay in comment)
-- [ ] Handle case: not in multi-line comment
-  - [ ] Check if line starts with single-line comment → return Comment
-  - [ ] Check if line starts with multi-line comment start
-  - [ ] If multi-line start found, check if end is on same line
-  - [ ] If complete multi-line on one line, check for code after → return Code or Comment
-  - [ ] If multi-line starts but doesn't end, update state and return Comment
-  - [ ] Otherwise return Code
-- [ ] Handle shebang lines (#!) as Code
-- [ ] Add comprehensive unit tests for line classification:
-  - [ ] Test blank lines
-  - [ ] Test single-line comments
-  - [ ] Test code lines
-  - [ ] Test multi-line comments (start, middle, end)
-  - [ ] Test mixed lines (code + comment)
-  - [ ] Test nested multi-line comments
-  - [ ] Test edge case: empty multi-line comment /* */
-  - [ ] Test shebang lines
-  - [ ] Test strings containing comment syntax (will misclassify in v1, document)
+- [x] Create `LineClassifier` struct
+- [x] Implement `new()` constructor that takes a reference to `LanguageInfo`
+- [x] Create helper method `trim_line()` to trim whitespace
+- [x] Create helper method `is_blank()` to check if line is blank
+- [x] Create helper method `starts_with_single_comment()` to check single-line comments
+- [x] Create helper method `contains_multi_line_start()` to find multi-line start delimiters
+- [x] Create helper method `contains_multi_line_end()` to find multi-line end delimiters
+- [x] Create helper method `find_delimiter_position()` to locate delimiter in line
+- [x] Implement main `classify_line()` method that takes a line and state, returns LineType
+- [x] Handle blank line detection (first check)
+- [x] Handle case: already in multi-line comment
+  - [x] Check if line contains end delimiter
+  - [x] If end found, check if there's code after the delimiter
+  - [x] If code after delimiter, return Code and update state
+  - [x] If no code after delimiter, return Comment and update state
+  - [x] If no end delimiter, return Comment (stay in comment)
+- [x] Handle case: not in multi-line comment
+  - [x] Check if line starts with single-line comment → return Comment
+  - [x] Check if line starts with multi-line comment start
+  - [x] If multi-line start found, check if end is on same line
+  - [x] If complete multi-line on one line, check for code after → return Code or Comment
+  - [x] If multi-line starts but doesn't end, update state and return Comment
+  - [x] Otherwise return Code
+- [x] Handle shebang lines (#!) as Code
+- [x] Add comprehensive unit tests for line classification:
+  - [x] Test blank lines
+  - [x] Test single-line comments
+  - [x] Test code lines
+  - [x] Test multi-line comments (start, middle, end)
+  - [x] Test mixed lines (code + comment)
+  - [x] Test nested multi-line comments
+  - [x] Test edge case: empty multi-line comment /* */
+  - [x] Test shebang lines
+  - [x] Test strings containing comment syntax (will misclassify in v1, document)
 
 ### 4.3 File Classification (src/classifier.rs)
-- [ ] Create `classify_file()` function that takes lines and language info
-- [ ] Initialize `ClassifierState`
-- [ ] Initialize `FileStats`
-- [ ] Iterate through all lines
-- [ ] Classify each line and update stats
-- [ ] Return final `FileStats`
-- [ ] Add unit tests with sample file content
+- [x] Create `classify_file()` function that takes lines and language info
+- [x] Initialize `ClassifierState`
+- [x] Initialize `FileStats`
+- [x] Iterate through all lines
+- [x] Classify each line and update stats
+- [x] Return final `FileStats`
+- [x] Add unit tests with sample file content
 
 ---
 
