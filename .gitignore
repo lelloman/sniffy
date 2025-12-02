@@ -1,0 +1,24 @@
+# Rust build artifacts
+/target
+
+# Debug and release builds
+debug/
+target/
+
+# Remove Cargo.lock for binaries (keep for libraries)
+# We'll keep it for now as this is a binary
+
+# Backup files
+**/*.rs.bk
+*.pdb
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
