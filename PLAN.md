@@ -172,21 +172,21 @@ This document contains every single task in the exact sequence they should be im
 - [x] Add unit tests with text and binary test files
 
 ### 5.2 File Processor (src/processor.rs)
-- [ ] Create `FileProcessor` struct
-- [ ] Add field for `LanguageDetector`
-- [ ] Implement `new()` constructor
-- [ ] Implement `process_file()` method that takes a Path
-  - [ ] Check if file is binary, skip if true
-  - [ ] Detect language from file extension
-  - [ ] If language unknown, return None
-  - [ ] Open file with BufReader
-  - [ ] Read file line by line
-  - [ ] Handle UTF-8 decoding errors (skip invalid lines with warning)
-  - [ ] Collect all lines into Vec<String>
-  - [ ] Call line classifier to get FileStats
-  - [ ] Return Some((language_name, FileStats))
-- [ ] Handle IO errors with proper error types
-- [ ] Add unit tests with sample files
+- [x] Create `FileProcessor` struct
+- [x] Add field for `LanguageDetector`
+- [x] Implement `new()` constructor
+- [x] Implement `process_file()` method that takes a Path
+  - [x] Check if file is binary, skip if true
+  - [x] Detect language from file extension
+  - [x] If language unknown, return None
+  - [x] Open file with BufReader
+  - [x] Read file line by line
+  - [x] Handle UTF-8 decoding errors (skip invalid lines with warning)
+  - [x] Collect all lines into Vec<String>
+  - [x] Call line classifier to get FileStats
+  - [x] Return Some((language_name, FileStats))
+- [x] Handle IO errors with proper error types
+- [x] Add unit tests with sample files
 
 ---
 
