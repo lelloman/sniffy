@@ -22,16 +22,16 @@ This document contains every single task in the exact sequence they should be im
 - [x] Configure binary target in Cargo.toml
 
 ### 1.3 Create Project Structure
-- [ ] Create `src/main.rs` (entry point)
-- [ ] Create `src/lib.rs` (library root)
-- [ ] Create `src/language.rs` (language definitions)
-- [ ] Create `src/classifier.rs` (line classification)
-- [ ] Create `src/processor.rs` (file processing)
-- [ ] Create `src/walker.rs` (directory walking)
-- [ ] Create `src/stats.rs` (statistics aggregation)
-- [ ] Create `src/output.rs` (output formatting)
-- [ ] Create `src/cli.rs` (CLI argument parsing)
-- [ ] Create `src/error.rs` (custom error types)
+- [x] Create `src/main.rs` (entry point)
+- [x] Create `src/lib.rs` (library root)
+- [x] Create `src/language.rs` (language definitions)
+- [x] Create `src/classifier.rs` (line classification)
+- [x] Create `src/processor.rs` (file processing)
+- [x] Create `src/walker.rs` (directory walking)
+- [x] Create `src/stats.rs` (statistics aggregation)
+- [x] Create `src/output.rs` (output formatting)
+- [x] Create `src/cli.rs` (CLI argument parsing)
+- [x] Create `src/error.rs` (custom error types)
 
 ---
 
