@@ -13,13 +13,13 @@ This document contains every single task in the exact sequence they should be im
 - [x] Create README.md with basic project description
 
 ### 1.2 Configure Cargo.toml
-- [ ] Add project metadata (name, version, authors, edition, description)
-- [ ] Add dependency: `clap = { version = "4", features = ["derive"] }`
-- [ ] Add dependency: `anyhow = "1"`
-- [ ] Add dependency: `comfy-table = "7"`
-- [ ] Add dependency: `ignore = "0.4"`
-- [ ] Add dev-dependency: `tempfile = "3"` (for tests)
-- [ ] Configure binary target in Cargo.toml
+- [x] Add project metadata (name, version, authors, edition, description)
+- [x] Add dependency: `clap = { version = "4", features = ["derive"] }`
+- [x] Add dependency: `anyhow = "1"`
+- [x] Add dependency: `comfy-table = "7"`
+- [x] Add dependency: `ignore = "0.4"`
+- [x] Add dev-dependency: `tempfile = "3"` (for tests)
+- [x] Configure binary target in Cargo.toml
 
 ### 1.3 Create Project Structure
 - [ ] Create `src/main.rs` (entry point)
