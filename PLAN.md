@@ -107,12 +107,12 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 4: Line Classification Engine
 
 ### 4.1 Line Classifier State (src/classifier.rs)
-- [ ] Define `LineType` enum: Blank, Comment, Code
-- [ ] Define `ClassifierState` struct to track multi-line comment state
-- [ ] Add field `in_multi_line_comment` to track if we're inside a multi-line comment
-- [ ] Add field `current_delimiter` to track which delimiter we're inside
-- [ ] Implement `new()` constructor for `ClassifierState`
-- [ ] Implement `reset()` method to reset state
+- [x] Define `LineType` enum: Blank, Comment, Code
+- [x] Define `ClassifierState` struct to track multi-line comment state
+- [x] Add field `in_multi_line_comment` to track if we're inside a multi-line comment
+- [x] Add field `current_delimiter` to track which delimiter we're inside
+- [x] Implement `new()` constructor for `ClassifierState`
+- [x] Implement `reset()` method to reset state
 
 ### 4.2 Line Classification Logic (src/classifier.rs)
 - [ ] Create `LineClassifier` struct
