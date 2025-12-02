@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use sniffy::cli::Cli;
 use sniffy::git::GitAnalyzer;
 use sniffy::output::OutputFormatter;
@@ -5,6 +6,8 @@ use sniffy::processor::FileProcessor;
 use sniffy::stats::ProjectStats;
 use sniffy::walker::DirectoryWalker;
 use std::process;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 
 fn main() {
     // Parse and validate CLI arguments
@@ -21,37 +24,59 @@ fn main() {
         return;
     }
 
-    // Create file processor
-    let processor = FileProcessor::new();
-    let mut project_stats = ProjectStats::new();
+    // Configure Rayon thread pool
+    if cli.jobs > 0 {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(cli.jobs)
+            .build_global()
+            .unwrap_or_else(|e| {
+                eprintln!("Warning: Failed to set thread count: {}", e);
+            });
+    }
 
-    let mut total_files = 0;
-    let mut processed_files = 0;
-
-    // Process each path
+    // Collect all file paths first
+    let mut all_files = Vec::new();
     for path in &cli.paths {
         if cli.verbose {
-            eprintln!("Analyzing: {}", path.display());
+            eprintln!("Scanning: {}", path.display());
         }
 
-        // Create directory walker
         let walker = DirectoryWalker::new(path).hidden(cli.hidden);
-
-        // Walk and process each file
-        for file_path in walker.walk() {
-            total_files += 1;
-
-            if cli.verbose && total_files % 100 == 0 {
-                eprintln!("Processed {} files...", total_files);
-            }
-
-            // Process the file
-            if let Some((language, stats)) = processor.process_file(&file_path) {
-                project_stats.add_file_stats(&language, stats);
-                processed_files += 1;
-            }
-        }
+        all_files.extend(walker.walk());
     }
+
+    let total_files = all_files.len();
+
+    if cli.verbose {
+        eprintln!("Found {} files, processing in parallel...", total_files);
+    }
+
+    // Process files in parallel
+    let processed_count = Arc::new(AtomicUsize::new(0));
+    let project_stats = all_files
+        .par_iter()
+        .map(|file_path| {
+            let processor = FileProcessor::new();
+            let mut local_stats = ProjectStats::new();
+
+            if let Some((language, stats)) = processor.process_file(file_path) {
+                local_stats.add_file_stats(&language, stats);
+
+                // Update progress counter
+                let count = processed_count.fetch_add(1, Ordering::Relaxed) + 1;
+                if cli.verbose && count.is_multiple_of(100) {
+                    eprintln!("Processed {} files...", count);
+                }
+            }
+
+            local_stats
+        })
+        .reduce(ProjectStats::new, |mut acc, stats| {
+            acc.merge(stats);
+            acc
+        });
+
+    let processed_files = processed_count.load(Ordering::Relaxed);
 
     if cli.verbose {
         eprintln!(

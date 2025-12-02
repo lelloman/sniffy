@@ -47,6 +47,10 @@ pub struct Cli {
     /// Output format (table, json, or csv)
     #[arg(long, default_value = "table", value_name = "FORMAT")]
     pub format: String,
+
+    /// Number of parallel jobs (0 = number of CPUs)
+    #[arg(short = 'j', long, default_value = "0", value_name = "N")]
+    pub jobs: usize,
 }
 
 impl Cli {
