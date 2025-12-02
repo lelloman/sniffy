@@ -260,20 +260,20 @@ This document contains every single task in the exact sequence they should be im
 ## Phase 8: Output Formatting
 
 ### 8.1 Table Formatter (src/output.rs)
-- [ ] Create `OutputFormatter` struct
-- [ ] Implement `format_table()` method that takes ProjectStats
-- [ ] Create comfy-table Table instance
-- [ ] Set table header: Language, Files, Blank, Comment, Code, Total
-- [ ] Add rows for each language with stats
-- [ ] Calculate and add Total row at bottom
-- [ ] Format numbers with thousand separators
-- [ ] Right-align numeric columns
-- [ ] Apply borders and styling
-- [ ] Return formatted string
+- [x] Create `OutputFormatter` struct
+- [x] Implement `format_table()` method that takes ProjectStats
+- [x] Create comfy-table Table instance
+- [x] Set table header: Language, Files, Blank, Comment, Code, Total
+- [x] Add rows for each language with stats
+- [x] Calculate and add Total row at bottom
+- [x] Format numbers with thousand separators
+- [x] Right-align numeric columns
+- [x] Apply borders and styling
+- [x] Return formatted string
 
 ### 8.2 Sorting (src/output.rs)
-- [ ] Implement `sort_languages()` method that takes sort criteria
-- [ ] Sort by language name (alphabetical)
+- [x] Implement `sort_languages()` method that takes sort criteria (done in ProjectStats)
+- [x] Sort by language name (alphabetical)
 - [ ] Sort by file count (descending)
 - [ ] Sort by line count (descending)
 - [ ] Add unit tests for sorting
