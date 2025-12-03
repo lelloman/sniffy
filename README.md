@@ -64,6 +64,12 @@ sniffy --hidden
 
 # Control parallel jobs (0 = auto-detect CPUs)
 sniffy --jobs 4
+
+# Disable colored output
+sniffy --no-color
+
+# Or use the NO_COLOR environment variable (https://no-color.org/)
+NO_COLOR=1 sniffy
 ```
 
 ### Output Formats
@@ -194,6 +200,7 @@ Options:
   -v, --verbose          Verbose output with progress tracking
   -j, --jobs <N>         Number of parallel jobs (0 = number of CPUs) [default: 0]
       --format <FORMAT>  Output format (table, json, or csv) [default: table]
+      --no-color         Disable colored output
 
   Git History Options:
       --history          Analyze git commit history
