@@ -59,6 +59,10 @@ pub struct Cli {
     /// Number of parallel jobs (0 = number of CPUs)
     #[arg(short = 'j', long, default_value = "0", value_name = "N")]
     pub jobs: usize,
+
+    /// Disable colored output
+    #[arg(long)]
+    pub no_color: bool,
 }
 
 impl Cli {
@@ -105,6 +109,27 @@ impl Cli {
         }
 
         Ok(())
+    }
+
+    /// Check if colored output should be used.
+    ///
+    /// Colors are disabled if:
+    /// - The `--no-color` flag is set, OR
+    /// - The `NO_COLOR` environment variable is set (any non-empty value)
+    pub fn should_use_color(&self) -> bool {
+        if self.no_color {
+            return false;
+        }
+
+        // Check NO_COLOR environment variable
+        // According to https://no-color.org/, any non-empty value means disable colors
+        if let Ok(val) = std::env::var("NO_COLOR") {
+            if !val.is_empty() {
+                return false;
+            }
+        }
+
+        true
     }
 
     /// Parse the --since date string into a `DateTime<Utc>`.
@@ -184,5 +209,105 @@ mod tests {
     fn test_parse_date_string_invalid_format() {
         let result = Cli::parse_date_string("01/15/2024");
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_should_use_color_default() {
+        // Clear NO_COLOR if it exists
+        std::env::remove_var("NO_COLOR");
+
+        let cli = Cli {
+            paths: vec![],
+            hidden: false,
+            verbose: false,
+            history: false,
+            since: None,
+            until: None,
+            last: None,
+            by_day: false,
+            by_week: false,
+            author: None,
+            format: "table".to_string(),
+            jobs: 0,
+            no_color: false,
+        };
+
+        assert!(cli.should_use_color());
+    }
+
+    #[test]
+    fn test_should_use_color_with_flag() {
+        std::env::remove_var("NO_COLOR");
+
+        let cli = Cli {
+            paths: vec![],
+            hidden: false,
+            verbose: false,
+            history: false,
+            since: None,
+            until: None,
+            last: None,
+            by_day: false,
+            by_week: false,
+            author: None,
+            format: "table".to_string(),
+            jobs: 0,
+            no_color: true,
+        };
+
+        assert!(!cli.should_use_color());
+    }
+
+    #[test]
+    fn test_should_use_color_with_env() {
+        std::env::set_var("NO_COLOR", "1");
+
+        let cli = Cli {
+            paths: vec![],
+            hidden: false,
+            verbose: false,
+            history: false,
+            since: None,
+            until: None,
+            last: None,
+            by_day: false,
+            by_week: false,
+            author: None,
+            format: "table".to_string(),
+            jobs: 0,
+            no_color: false,
+        };
+
+        assert!(!cli.should_use_color());
+
+        // Clean up
+        std::env::remove_var("NO_COLOR");
+    }
+
+    #[test]
+    fn test_should_use_color_empty_env() {
+        std::env::set_var("NO_COLOR", "");
+
+        let cli = Cli {
+            paths: vec![],
+            hidden: false,
+            verbose: false,
+            history: false,
+            since: None,
+            until: None,
+            last: None,
+            by_day: false,
+            by_week: false,
+            author: None,
+            format: "table".to_string(),
+            jobs: 0,
+            no_color: false,
+        };
+
+        // Empty NO_COLOR means colors should be enabled
+        assert!(cli.should_use_color());
+
+        // Clean up
+        std::env::remove_var("NO_COLOR");
     }
 }

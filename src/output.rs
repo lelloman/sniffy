@@ -13,7 +13,9 @@ pub struct OutputFormatter;
 
 impl OutputFormatter {
     /// Format project statistics as a table.
-    pub fn format_table(stats: &ProjectStats) -> String {
+    ///
+    /// If `use_color` is false, colors will be disabled.
+    pub fn format_table(stats: &ProjectStats, use_color: bool) -> String {
         let mut table = Table::new();
 
         // Set table style
@@ -22,14 +24,17 @@ impl OutputFormatter {
             .set_content_arrangement(ContentArrangement::Dynamic);
 
         // Add header
-        table.set_header(vec![
-            Cell::new("Language").fg(Color::Cyan),
-            Cell::new("Files").fg(Color::Cyan),
-            Cell::new("Blank").fg(Color::Cyan),
-            Cell::new("Comment").fg(Color::Cyan),
-            Cell::new("Code").fg(Color::Cyan),
-            Cell::new("Total").fg(Color::Cyan),
-        ]);
+        let header_cells = vec!["Language", "Files", "Blank", "Comment", "Code", "Total"];
+        if use_color {
+            table.set_header(
+                header_cells
+                    .into_iter()
+                    .map(|h| Cell::new(h).fg(Color::Cyan))
+                    .collect::<Vec<_>>(),
+            );
+        } else {
+            table.set_header(header_cells);
+        }
 
         // Add rows for each language
         let languages = stats.get_languages();
@@ -47,14 +52,32 @@ impl OutputFormatter {
         // Add total row
         let (total_files, total_stats) = stats.total();
         if !languages.is_empty() {
-            table.add_row(vec![
-                Cell::new("Total").fg(Color::Green),
-                Cell::new(Self::format_number(total_files)).fg(Color::Green),
-                Cell::new(Self::format_number(total_stats.blank)).fg(Color::Green),
-                Cell::new(Self::format_number(total_stats.comment)).fg(Color::Green),
-                Cell::new(Self::format_number(total_stats.code)).fg(Color::Green),
-                Cell::new(Self::format_number(total_stats.total())).fg(Color::Green),
-            ]);
+            // Create owned strings for the numbers
+            let total_files_str = Self::format_number(total_files);
+            let total_blank_str = Self::format_number(total_stats.blank);
+            let total_comment_str = Self::format_number(total_stats.comment);
+            let total_code_str = Self::format_number(total_stats.code);
+            let total_total_str = Self::format_number(total_stats.total());
+
+            if use_color {
+                table.add_row(vec![
+                    Cell::new("Total").fg(Color::Green),
+                    Cell::new(total_files_str).fg(Color::Green),
+                    Cell::new(total_blank_str).fg(Color::Green),
+                    Cell::new(total_comment_str).fg(Color::Green),
+                    Cell::new(total_code_str).fg(Color::Green),
+                    Cell::new(total_total_str).fg(Color::Green),
+                ]);
+            } else {
+                table.add_row(vec![
+                    Cell::new("Total"),
+                    Cell::new(total_files_str),
+                    Cell::new(total_blank_str),
+                    Cell::new(total_comment_str),
+                    Cell::new(total_code_str),
+                    Cell::new(total_total_str),
+                ]);
+            }
         }
 
         table.to_string()
@@ -95,11 +118,14 @@ impl OutputFormatter {
 
     /// Format git history statistics as a table.
     /// The `period_label` parameter can be "Daily" or "Weekly".
+    ///
+    /// If `use_color` is false, colors will be disabled.
     pub fn format_history(
         stats: &HistoricalStats,
         time_series: &[crate::git::DailyStats],
         period_label: &str,
         limit: Option<usize>,
+        use_color: bool,
     ) -> String {
         let mut output = String::new();
 
@@ -128,12 +154,17 @@ impl OutputFormatter {
                 .load_preset(UTF8_FULL)
                 .set_content_arrangement(ContentArrangement::Dynamic);
 
-            table.set_header(vec![
-                Cell::new("Date").fg(Color::Cyan),
-                Cell::new("Added").fg(Color::Cyan),
-                Cell::new("Deleted").fg(Color::Cyan),
-                Cell::new("Net Change").fg(Color::Cyan),
-            ]);
+            let header_cells = vec!["Date", "Added", "Deleted", "Net Change"];
+            if use_color {
+                table.set_header(
+                    header_cells
+                        .into_iter()
+                        .map(|h| Cell::new(h).fg(Color::Cyan))
+                        .collect::<Vec<_>>(),
+                );
+            } else {
+                table.set_header(header_cells);
+            }
 
             // Limit the number of rows if specified
             let rows_to_show = limit.unwrap_or(time_series.len()).min(time_series.len());
@@ -141,18 +172,36 @@ impl OutputFormatter {
             for daily in time_series.iter().take(rows_to_show) {
                 let net_code = daily.net_code;
                 let net_cell = Cell::new(Self::format_signed_number(net_code));
-                let net_cell = if net_code > 0 {
-                    net_cell.fg(Color::Green)
-                } else if net_code < 0 {
-                    net_cell.fg(Color::Red)
+                let net_cell = if use_color {
+                    if net_code > 0 {
+                        net_cell.fg(Color::Green)
+                    } else if net_code < 0 {
+                        net_cell.fg(Color::Red)
+                    } else {
+                        net_cell
+                    }
                 } else {
                     net_cell
                 };
 
+                let added_cell = Cell::new(Self::format_number(daily.additions.code));
+                let deleted_cell = Cell::new(Self::format_number(daily.deletions.code));
+
+                let added_cell = if use_color {
+                    added_cell.fg(Color::Green)
+                } else {
+                    added_cell
+                };
+                let deleted_cell = if use_color {
+                    deleted_cell.fg(Color::Red)
+                } else {
+                    deleted_cell
+                };
+
                 table.add_row(vec![
                     Cell::new(daily.date.to_string()),
-                    Cell::new(Self::format_number(daily.additions.code)).fg(Color::Green),
-                    Cell::new(Self::format_number(daily.deletions.code)).fg(Color::Red),
+                    added_cell,
+                    deleted_cell,
                     net_cell,
                 ]);
             }
@@ -183,12 +232,17 @@ impl OutputFormatter {
                 .load_preset(UTF8_FULL)
                 .set_content_arrangement(ContentArrangement::Dynamic);
 
-            table.set_header(vec![
-                Cell::new("Author").fg(Color::Cyan),
-                Cell::new("Code Lines").fg(Color::Cyan),
-                Cell::new("Comments").fg(Color::Cyan),
-                Cell::new("Total").fg(Color::Cyan),
-            ]);
+            let author_header_cells = vec!["Author", "Code Lines", "Comments", "Total"];
+            if use_color {
+                table.set_header(
+                    author_header_cells
+                        .into_iter()
+                        .map(|h| Cell::new(h).fg(Color::Cyan))
+                        .collect::<Vec<_>>(),
+                );
+            } else {
+                table.set_header(author_header_cells);
+            }
 
             // Sort authors by total lines contributed
             let mut authors: Vec<_> = stats.by_author.iter().collect();
@@ -374,7 +428,7 @@ mod tests {
     #[test]
     fn test_format_table_empty() {
         let stats = ProjectStats::new();
-        let table = OutputFormatter::format_table(&stats);
+        let table = OutputFormatter::format_table(&stats, true);
 
         // Should have header but no data rows
         assert!(table.contains("Language"));
@@ -401,7 +455,7 @@ mod tests {
             },
         );
 
-        let table = OutputFormatter::format_table(&stats);
+        let table = OutputFormatter::format_table(&stats, true);
 
         // Check for language names
         assert!(table.contains("Rust") || table.contains("Python"));

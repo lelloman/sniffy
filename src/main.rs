@@ -101,7 +101,8 @@ fn main() {
         }
         _ => {
             // Default to table format
-            let table = OutputFormatter::format_table(&project_stats);
+            let use_color = cli.should_use_color();
+            let table = OutputFormatter::format_table(&project_stats, use_color);
             println!("{}", table);
         }
     }
@@ -211,7 +212,8 @@ fn run_history_mode(cli: &Cli) {
         }
         _ => {
             // Default to table format
-            let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit);
+            let use_color = cli.should_use_color();
+            let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit, use_color);
             println!("{}", output);
         }
     }
