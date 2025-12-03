@@ -8,11 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Comprehensive rustdoc documentation for public APIs
+- Comprehensive rustdoc documentation for all public APIs and modules
+  - Crate-level documentation with usage examples
+  - Module-level documentation
+  - Builds without warnings
+
+### Security
+- Verified all 143 dependencies are secure with cargo-audit
+- No known vulnerabilities in dependency tree
+
+### Planned (Not Yet Implemented)
 - Configuration file support (.sniffyrc)
 - Generated file detection (--skip-generated flag)
 - Additional CLI options: --exclude, --languages, --sort-by
 - NO_COLOR environment variable support
+- Formal benchmarks with criterion.rs
 
 ## [0.2.0] - 2025-12-03
 
