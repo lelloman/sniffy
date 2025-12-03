@@ -1,12 +1,15 @@
 [package]
 name = "sniffy"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
-authors = ["Sniffy Contributors"]
-description = "A fast command-line utility for analyzing source code statistics"
+authors = ["Domenico Cerasuolo <lelloman@gmail.com>"]
+description = "A blazingly fast source code lines counter with git history analysis, supporting 33+ languages"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourusername/sniffy"
-keywords = ["cli", "code-analysis", "statistics", "loc", "git"]
+repository = "https://github.com/lelloman/sniffy"
+homepage = "https://github.com/lelloman/sniffy"
+documentation = "https://docs.rs/sniffy"
+readme = "README.md"
+keywords = ["cli", "loc", "cloc", "sloc", "git"]
 categories = ["command-line-utilities", "development-tools"]
 
 [[bin]]
