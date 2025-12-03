@@ -12,8 +12,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration file support (.sniffyrc)
 - Generated file detection (--skip-generated flag)
 - Additional CLI options: --exclude, --languages, --sort-by
-- Progress indicator improvements
 - NO_COLOR environment variable support
+
+## [0.2.0] - 2025-12-03
+
+### Added (Phase 11 Completion)
+- **--until** option for date range end filtering in git history
+- **--last N** option to analyze commits from the last N days
+- Progress indicator for git history analysis in verbose mode
+  - Shows "Processed 100 commits..." every 100 commits
+  - Shows completion message with total commit count
+- 10 additional integration tests for git history features (42 total, up from 32)
+- 4 unit tests for date parsing (68 total, up from 64)
+- Comprehensive date parsing support (YYYY-MM-DD and RFC3339 formats)
+- Better verbose output for git history with date range information
+
+### Improved
+- Git history date filtering now supports inclusive date ranges
+- --last option conflicts with --since and --until (enforced by clap)
+- Better error messages for invalid date formats
 
 ## [0.1.0] - 2025-12-03
 

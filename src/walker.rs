@@ -338,7 +338,9 @@ mod tests {
         assert_eq!(files.len(), 2);
         assert!(files.iter().any(|p| p.ends_with("package.json")));
         assert!(files.iter().any(|p| p.ends_with("Cargo.toml")));
-        assert!(!files.iter().any(|p| p.file_name().unwrap().to_str().unwrap().contains("lock")));
+        assert!(!files
+            .iter()
+            .any(|p| p.file_name().unwrap().to_str().unwrap().contains("lock")));
     }
 
     #[test]
@@ -397,11 +399,15 @@ mod tests {
     #[test]
     fn test_should_skip_file_function() {
         // Test dependency directories
-        assert!(should_skip_file(Path::new("/project/node_modules/package/index.js")));
+        assert!(should_skip_file(Path::new(
+            "/project/node_modules/package/index.js"
+        )));
         assert!(should_skip_file(Path::new("/project/vendor/lib.rb")));
 
         // Test build directories
-        assert!(should_skip_file(Path::new("/project/target/release/binary")));
+        assert!(should_skip_file(Path::new(
+            "/project/target/release/binary"
+        )));
         assert!(should_skip_file(Path::new("/project/build/output.js")));
         assert!(should_skip_file(Path::new("/project/dist/bundle.js")));
 
@@ -412,7 +418,9 @@ mod tests {
         // Test Python
         assert!(should_skip_file(Path::new("/project/venv/lib/python.py")));
         assert!(should_skip_file(Path::new("/project/.venv/activate")));
-        assert!(should_skip_file(Path::new("/project/__pycache__/module.pyc")));
+        assert!(should_skip_file(Path::new(
+            "/project/__pycache__/module.pyc"
+        )));
 
         // Test minified files
         assert!(should_skip_file(Path::new("/project/app.min.js")));

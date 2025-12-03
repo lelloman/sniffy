@@ -126,7 +126,7 @@ fn run_history_mode(cli: &Cli) {
         }
     };
 
-    // Parse since date
+    // Parse since and until dates
     let since = match cli.parse_since_date() {
         Ok(date) => date,
         Err(e) => {
@@ -135,16 +135,33 @@ fn run_history_mode(cli: &Cli) {
         }
     };
 
+    let until = match cli.parse_until_date() {
+        Ok(date) => date,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            process::exit(2);
+        }
+    };
+
     if cli.verbose {
-        if let Some(since_date) = since {
-            eprintln!("Analyzing commits since {}", since_date);
-        } else {
-            eprintln!("Analyzing all commits");
+        match (since, until) {
+            (Some(since_date), Some(until_date)) => {
+                eprintln!("Analyzing commits from {} to {}", since_date, until_date);
+            }
+            (Some(since_date), None) => {
+                eprintln!("Analyzing commits since {}", since_date);
+            }
+            (None, Some(until_date)) => {
+                eprintln!("Analyzing commits until {}", until_date);
+            }
+            (None, None) => {
+                eprintln!("Analyzing all commits");
+            }
         }
     }
 
     // Analyze history
-    let stats = match analyzer.analyze_history(since) {
+    let stats = match analyzer.analyze_history(since, until, cli.verbose) {
         Ok(s) => s,
         Err(e) => {
             eprintln!("Error: Failed to analyze git history: {}", e);

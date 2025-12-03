@@ -90,12 +90,17 @@ impl GitAnalyzer {
     }
 
     /// Analyze commit history and return historical statistics.
+    ///
+    /// If `verbose` is true, progress will be printed to stderr every 100 commits.
     pub fn analyze_history(
         &self,
         since: Option<DateTime<Utc>>,
+        until: Option<DateTime<Utc>>,
+        verbose: bool,
     ) -> Result<HistoricalStats, git2::Error> {
         let mut stats = HistoricalStats::default();
         let mut daily_map: HashMap<NaiveDate, DailyStats> = HashMap::new();
+        let mut commits_processed = 0;
 
         // Walk commits
         let mut revwalk = self.repo.revwalk()?;
@@ -110,13 +115,29 @@ impl GitAnalyzer {
             let commit_time = DateTime::from_timestamp(commit.time().seconds(), 0)
                 .unwrap_or(DateTime::UNIX_EPOCH);
 
+            // Check if commit is before 'since' date
             if let Some(since_date) = since {
                 if commit_time < since_date {
                     break; // Stop processing older commits
                 }
             }
 
+            // Check if commit is after 'until' date (inclusive - we want commits on the until date)
+            // We add one day to make the until date inclusive (commits until end of that day)
+            if let Some(until_date) = until {
+                let until_end_of_day = until_date + chrono::Duration::days(1);
+                if commit_time >= until_end_of_day {
+                    continue; // Skip this commit but continue walking
+                }
+            }
+
             stats.total_commits += 1;
+            commits_processed += 1;
+
+            // Show progress every 100 commits if verbose
+            if verbose && commits_processed % 100 == 0 {
+                eprintln!("Processed {} commits...", commits_processed);
+            }
 
             // Get commit date
             let date = commit_time.date_naive();
@@ -152,6 +173,12 @@ impl GitAnalyzer {
         daily.sort_by(|a, b| b.date.cmp(&a.date)); // Most recent first
 
         stats.daily = daily;
+
+        // Show completion message if verbose
+        if verbose {
+            eprintln!("Completed analyzing {} commits", commits_processed);
+        }
+
         Ok(stats)
     }
 

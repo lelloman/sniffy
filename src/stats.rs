@@ -113,14 +113,14 @@ impl ProjectStats {
     /// Merge another ProjectStats into this one (for parallel processing).
     pub fn merge(&mut self, other: ProjectStats) {
         for (language, other_lang_stats) in other.languages {
-            let lang_stats = self
-                .languages
-                .entry(language.clone())
-                .or_insert_with(|| LanguageStats {
-                    language,
-                    files: 0,
-                    stats: FileStats::default(),
-                });
+            let lang_stats =
+                self.languages
+                    .entry(language.clone())
+                    .or_insert_with(|| LanguageStats {
+                        language,
+                        files: 0,
+                        stats: FileStats::default(),
+                    });
             lang_stats.files += other_lang_stats.files;
             lang_stats.stats += other_lang_stats.stats;
         }

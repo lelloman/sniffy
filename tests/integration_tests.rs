@@ -82,7 +82,9 @@ fn test_csv_output_format() {
 
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("language,files,blank,comment,code,total"))
+        .stdout(predicate::str::contains(
+            "language,files,blank,comment,code,total",
+        ))
         .stdout(predicate::str::contains("Rust"));
 }
 
@@ -97,9 +99,7 @@ fn test_hidden_files_excluded_by_default() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path());
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("1")); // Should show 1 file
+    cmd.assert().success().stdout(predicate::str::contains("1")); // Should show 1 file
 }
 
 #[test]
@@ -113,9 +113,7 @@ fn test_hidden_files_included_with_flag() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path()).arg("--hidden");
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("2"));
+    cmd.assert().success().stdout(predicate::str::contains("2"));
 }
 
 #[test]
@@ -123,9 +121,9 @@ fn test_invalid_path_error() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg("/nonexistent/path/that/does/not/exist");
 
-    cmd.assert()
-        .failure()
-        .stderr(predicate::str::contains("does not exist").or(predicate::str::contains("not found")));
+    cmd.assert().failure().stderr(
+        predicate::str::contains("does not exist").or(predicate::str::contains("not found")),
+    );
 }
 
 #[test]
@@ -142,8 +140,7 @@ fn test_empty_directory() {
 #[test]
 fn test_verbose_mode() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(fixture_path("simple"))
-        .arg("--verbose");
+    cmd.arg(fixture_path("simple")).arg("--verbose");
 
     cmd.assert()
         .success()
@@ -153,9 +150,7 @@ fn test_verbose_mode() {
 #[test]
 fn test_parallel_jobs_option() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(fixture_path("simple"))
-        .arg("--jobs")
-        .arg("2");
+    cmd.arg(fixture_path("simple")).arg("--jobs").arg("2");
 
     cmd.assert().success();
 }
@@ -175,9 +170,7 @@ fn test_node_modules_skipped() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path());
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("1"));
+    cmd.assert().success().stdout(predicate::str::contains("1"));
 }
 
 #[test]
@@ -185,14 +178,16 @@ fn test_minified_files_skipped() {
     let temp_dir = TempDir::new().unwrap();
 
     fs::write(temp_dir.path().join("app.js"), "console.log('hi');").unwrap();
-    fs::write(temp_dir.path().join("app.min.js"), "console.log('minified');").unwrap();
+    fs::write(
+        temp_dir.path().join("app.min.js"),
+        "console.log('minified');",
+    )
+    .unwrap();
 
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path());
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("1"));
+    cmd.assert().success().stdout(predicate::str::contains("1"));
 }
 
 #[test]
@@ -205,9 +200,7 @@ fn test_lock_files_skipped() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path());
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("1"));
+    cmd.assert().success().stdout(predicate::str::contains("1"));
 }
 
 #[test]
@@ -266,7 +259,9 @@ fn test_multiple_paths() {
 #[test]
 fn test_exact_counts_simple_rust() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(fixture_path("simple/main.rs")).arg("--format").arg("json");
+    cmd.arg(fixture_path("simple/main.rs"))
+        .arg("--format")
+        .arg("json");
 
     let output = cmd.assert().success();
     let stdout = String::from_utf8(output.get_output().stdout.clone()).unwrap();
@@ -280,7 +275,9 @@ fn test_exact_counts_simple_rust() {
 #[test]
 fn test_exact_counts_multi_lang() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(fixture_path("multi_lang")).arg("--format").arg("csv");
+    cmd.arg(fixture_path("multi_lang"))
+        .arg("--format")
+        .arg("csv");
 
     let output = cmd.assert().success();
     let stdout = String::from_utf8(output.get_output().stdout.clone()).unwrap();
@@ -292,9 +289,7 @@ fn test_exact_counts_multi_lang() {
 #[test]
 fn test_parallel_jobs_zero() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(fixture_path("simple"))
-        .arg("--jobs")
-        .arg("0"); // Auto-detect CPUs
+    cmd.arg(fixture_path("simple")).arg("--jobs").arg("0"); // Auto-detect CPUs
 
     cmd.assert().success();
 }
@@ -302,9 +297,7 @@ fn test_parallel_jobs_zero() {
 #[test]
 fn test_parallel_jobs_one() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(fixture_path("simple"))
-        .arg("--jobs")
-        .arg("1"); // Single-threaded
+    cmd.arg(fixture_path("simple")).arg("--jobs").arg("1"); // Single-threaded
 
     cmd.assert().success();
 }
@@ -335,9 +328,7 @@ fn test_git_history_with_since() {
 #[test]
 fn test_git_history_by_week() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(".")
-        .arg("--history")
-        .arg("--by-week");
+    cmd.arg(".").arg("--history").arg("--by-week");
 
     cmd.assert().success();
 }
@@ -345,22 +336,19 @@ fn test_git_history_by_week() {
 #[test]
 fn test_git_history_json_format() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(".")
-        .arg("--history")
-        .arg("--format")
-        .arg("json");
+    cmd.arg(".").arg("--history").arg("--format").arg("json");
 
     let output = cmd.assert().success();
-    output.stdout(predicate::str::contains("\"time_series\"").or(predicate::str::contains("\"total_commits\"")));
+    output.stdout(
+        predicate::str::contains("\"time_series\"")
+            .or(predicate::str::contains("\"total_commits\"")),
+    );
 }
 
 #[test]
 fn test_git_history_csv_format() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
-    cmd.arg(".")
-        .arg("--history")
-        .arg("--format")
-        .arg("csv");
+    cmd.arg(".").arg("--history").arg("--format").arg("csv");
 
     let output = cmd.assert().success();
     output.stdout(predicate::str::contains("date,").or(predicate::str::contains("week,")));
@@ -380,9 +368,7 @@ fn test_binary_file_actually_skipped() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path());
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("1")); // Only 1 file (the .rs file)
+    cmd.assert().success().stdout(predicate::str::contains("1")); // Only 1 file (the .rs file)
 }
 
 #[test]
@@ -447,7 +433,135 @@ fn test_nested_directories() {
     let mut cmd = Command::cargo_bin("sniffy").unwrap();
     cmd.arg(temp_dir.path());
 
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("2")); // 2 files
+    cmd.assert().success().stdout(predicate::str::contains("2")); // 2 files
+}
+
+// New Phase 11 integration tests
+
+#[test]
+fn test_git_history_with_until() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--since")
+        .arg("2025-12-01")
+        .arg("--until")
+        .arg("2025-12-31");
+
+    cmd.assert().success();
+}
+
+#[test]
+fn test_git_history_with_last_days() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".").arg("--history").arg("--last").arg("30");
+
+    let output = cmd.assert().success();
+    output.stdout(predicate::str::contains("Git History"));
+}
+
+#[test]
+fn test_git_history_verbose_shows_progress() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--last")
+        .arg("7")
+        .arg("--verbose");
+
+    let output = cmd.assert().success();
+    // Verbose mode should show completion message on stderr
+    output.stderr(predicate::str::contains("Completed analyzing"));
+}
+
+#[test]
+fn test_git_history_until_without_since() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--until")
+        .arg("2025-12-01");
+
+    cmd.assert().success();
+}
+
+#[test]
+fn test_git_history_date_range_json() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--since")
+        .arg("2025-12-01")
+        .arg("--until")
+        .arg("2025-12-31")
+        .arg("--format")
+        .arg("json");
+
+    let output = cmd.assert().success();
+    output.stdout(predicate::str::contains("\"total_commits\""));
+}
+
+#[test]
+fn test_git_history_last_with_csv() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--last")
+        .arg("14")
+        .arg("--format")
+        .arg("csv");
+
+    let output = cmd.assert().success();
+    output.stdout(predicate::str::contains("date,"));
+}
+
+#[test]
+fn test_git_history_last_conflicts_with_since() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--last")
+        .arg("7")
+        .arg("--since")
+        .arg("2025-12-01");
+
+    // Should fail because --last conflicts with --since
+    cmd.assert().failure();
+}
+
+#[test]
+fn test_git_history_last_conflicts_with_until() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--last")
+        .arg("7")
+        .arg("--until")
+        .arg("2025-12-31");
+
+    // Should fail because --last conflicts with --until
+    cmd.assert().failure();
+}
+
+#[test]
+fn test_git_history_invalid_date_format() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--since")
+        .arg("12/01/2025"); // Wrong format (MM/DD/YYYY)
+
+    let output = cmd.assert().failure();
+    output.stderr(predicate::str::contains("Invalid date format"));
+}
+
+#[test]
+fn test_git_history_since_rfc3339_format() {
+    let mut cmd = Command::cargo_bin("sniffy").unwrap();
+    cmd.arg(".")
+        .arg("--history")
+        .arg("--since")
+        .arg("2025-12-01T00:00:00Z");
+
+    cmd.assert().success();
 }

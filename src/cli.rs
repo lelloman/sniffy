@@ -32,6 +32,14 @@ pub struct Cli {
     #[arg(long, value_name = "DATE")]
     pub since: Option<String>,
 
+    /// Only analyze commits until this date (format: YYYY-MM-DD or RFC3339)
+    #[arg(long, value_name = "DATE")]
+    pub until: Option<String>,
+
+    /// Only analyze commits from the last N days
+    #[arg(long, value_name = "N", conflicts_with_all = ["since", "until"])]
+    pub last: Option<usize>,
+
     /// Group history by day (default)
     #[arg(long)]
     pub by_day: bool,
@@ -74,10 +82,15 @@ impl Cli {
 
         // Validate that history-related flags require --history
         if !self.history
-            && (self.since.is_some() || self.by_day || self.by_week || self.author.is_some())
+            && (self.since.is_some()
+                || self.until.is_some()
+                || self.last.is_some()
+                || self.by_day
+                || self.by_week
+                || self.author.is_some())
         {
             return Err(
-                "History-related flags (--since, --by-day, --by-week, --author) require --history"
+                "History-related flags (--since, --until, --last, --by-day, --by-week, --author) require --history"
                     .to_string(),
             );
         }
@@ -95,25 +108,81 @@ impl Cli {
     }
 
     /// Parse the --since date string into a DateTime<Utc>.
+    /// If --last N is specified, calculates the date N days ago.
     pub fn parse_since_date(&self) -> Result<Option<DateTime<Utc>>, String> {
+        // Handle --last N days
+        if let Some(days) = self.last {
+            let now = Utc::now();
+            let duration = chrono::Duration::days(days as i64);
+            return Ok(Some(now - duration));
+        }
+
         let Some(since_str) = &self.since else {
             return Ok(None);
         };
 
+        Self::parse_date_string(since_str)
+    }
+
+    /// Parse the --until date string into a DateTime<Utc>.
+    pub fn parse_until_date(&self) -> Result<Option<DateTime<Utc>>, String> {
+        let Some(until_str) = &self.until else {
+            return Ok(None);
+        };
+
+        Self::parse_date_string(until_str)
+    }
+
+    /// Parse a date string in either RFC3339 or YYYY-MM-DD format.
+    fn parse_date_string(date_str: &str) -> Result<Option<DateTime<Utc>>, String> {
         // Try to parse as RFC3339 first
-        if let Ok(dt) = DateTime::parse_from_rfc3339(since_str) {
+        if let Ok(dt) = DateTime::parse_from_rfc3339(date_str) {
             return Ok(Some(dt.with_timezone(&Utc)));
         }
 
         // Try to parse as YYYY-MM-DD
-        if let Ok(naive_date) = chrono::NaiveDate::parse_from_str(since_str, "%Y-%m-%d") {
+        if let Ok(naive_date) = chrono::NaiveDate::parse_from_str(date_str, "%Y-%m-%d") {
             let naive_datetime = naive_date.and_hms_opt(0, 0, 0).unwrap();
             return Ok(Some(naive_datetime.and_utc()));
         }
 
         Err(format!(
             "Invalid date format '{}'. Use YYYY-MM-DD or RFC3339 format.",
-            since_str
+            date_str
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_date_string_yyyy_mm_dd() {
+        let result = Cli::parse_date_string("2024-01-15");
+        assert!(result.is_ok());
+        let dt = result.unwrap().unwrap();
+        assert_eq!(dt.format("%Y-%m-%d").to_string(), "2024-01-15");
+    }
+
+    #[test]
+    fn test_parse_date_string_rfc3339() {
+        let result = Cli::parse_date_string("2024-01-15T10:30:00Z");
+        assert!(result.is_ok());
+        let dt = result.unwrap().unwrap();
+        assert_eq!(dt.format("%Y-%m-%d").to_string(), "2024-01-15");
+    }
+
+    #[test]
+    fn test_parse_date_string_invalid() {
+        let result = Cli::parse_date_string("not-a-date");
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("Invalid date format"));
+    }
+
+    #[test]
+    fn test_parse_date_string_invalid_format() {
+        let result = Cli::parse_date_string("01/15/2024");
+        assert!(result.is_err());
     }
 }

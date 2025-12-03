@@ -351,7 +351,7 @@ This document contains every single task in the exact sequence they should be im
 - [x] Test binary file detection (in processor.rs tests)
 - [x] Test skip patterns (in walker.rs tests - 13 tests)
 - [x] Test sorting algorithms (test_project_stats_get_languages validates alphabetical sorting)
-- [x] Each test should verify exact expected behavior (64 unit tests passing)
+- [x] Each test should verify exact expected behavior (68 unit tests passing)
 - [ ] Deferred to Phase 6.3: Generated file detection tests (feature not yet implemented)
 
 ### 10.4 Integration Tests
@@ -376,7 +376,7 @@ This document contains every single task in the exact sequence they should be im
 - [x] Test: Nested directory structures
 - [x] Test: JSON/CSV output formats
 - [x] Test: Skip patterns (node_modules, minified, lock files)
-- [x] Total: 32 integration tests passing
+- [x] Total: 42 integration tests passing (added 10 git history tests)
 - [ ] Deferred to Phase 7: --exclude pattern tests (feature not in MVP)
 - [ ] Deferred to Phase 7: --languages filter tests (feature not in MVP)
 - [ ] Deferred to Phase 6.3: --skip-generated tests (feature not yet implemented)
@@ -453,19 +453,19 @@ This document contains every single task in the exact sequence they should be im
 - [x] Aggregate daily stats
 - [x] Build by-author stats if requested
 - [x] Return HistoricalStats
-- [ ] Show progress for large repositories (future enhancement)
+- [x] Show progress for large repositories (verbose mode shows every 100 commits + completion message)
 - [x] Add integration test with test repository
 
 ### 11.8 CLI Integration for History (src/cli.rs)
 - [x] Add history flag to CLI (--history)
 - [x] Add `--since` option for date filtering
-- [ ] Add `--until` option for date range end (future enhancement)
-- [ ] Add `--last N` option for last N days (future enhancement)
+- [x] Add `--until` option for date range end
+- [x] Add `--last N` option for last N days
 - [x] Add `--by-day` flag for daily breakdown (default behavior)
 - [x] Add `--by-week` flag for weekly aggregation
 - [x] Add `--author` option for author filtering
 - [x] Parse and validate date formats (YYYY-MM-DD and RFC3339)
-- [ ] Add unit tests for date parsing (basic validation implemented)
+- [x] Add unit tests for date parsing (4 comprehensive tests)
 
 ### 11.9 History Output Formatting (src/output.rs)
 - [x] Implement `format_history()` for daily/weekly stats
@@ -483,7 +483,7 @@ This document contains every single task in the exact sequence they should be im
 - [x] If history mode requested, run GitAnalyzer
 - [x] If not a git repo and history requested, show error
 - [x] Format and display history results
-- [ ] Add integration tests for history command (basic manual testing done)
+- [x] Add integration tests for history command (10 comprehensive tests covering all features)
 
 ---
 

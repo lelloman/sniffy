@@ -141,11 +141,20 @@ sniffy --history
 # Since a specific date
 sniffy --history --since 2024-01-01
 
+# Date range (from/to)
+sniffy --history --since 2024-01-01 --until 2024-12-31
+
+# Last N days (convenient shorthand)
+sniffy --history --last 30
+
 # Weekly aggregation
 sniffy --history --by-week
 
 # Filter by author
 sniffy --history --author "John Doe"
+
+# Verbose mode (shows progress for large repos)
+sniffy --history --verbose
 
 # Combine filters with JSON output
 sniffy --history --since 2024-01-01 --by-week --format json
@@ -189,6 +198,8 @@ Options:
   Git History Options:
       --history          Analyze git commit history
       --since <DATE>     Only analyze commits since date (YYYY-MM-DD or RFC3339)
+      --until <DATE>     Only analyze commits until date (YYYY-MM-DD or RFC3339)
+      --last <N>         Only analyze commits from the last N days
       --by-day           Group history by day (default)
       --by-week          Group history by week
       --author <NAME>    Filter commits by author name
