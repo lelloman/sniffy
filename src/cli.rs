@@ -107,7 +107,7 @@ impl Cli {
         Ok(())
     }
 
-    /// Parse the --since date string into a DateTime<Utc>.
+    /// Parse the --since date string into a `DateTime<Utc>`.
     /// If --last N is specified, calculates the date N days ago.
     pub fn parse_since_date(&self) -> Result<Option<DateTime<Utc>>, String> {
         // Handle --last N days
@@ -124,7 +124,7 @@ impl Cli {
         Self::parse_date_string(since_str)
     }
 
-    /// Parse the --until date string into a DateTime<Utc>.
+    /// Parse the --until date string into a `DateTime<Utc>`.
     pub fn parse_until_date(&self) -> Result<Option<DateTime<Utc>>, String> {
         let Some(until_str) = &self.until else {
             return Ok(None);
