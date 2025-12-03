@@ -204,20 +204,20 @@ This document contains every single task in the exact sequence they should be im
 - [x] Handle errors during walking (permission denied, etc.)
 
 ### 6.2 File Filtering (src/walker.rs)
-- [ ] Add common skip patterns to walker:
-  - [ ] `node_modules/`
-  - [ ] `target/` (Rust)
-  - [ ] `.git/`
-  - [ ] `.svn/`
-  - [ ] `build/`
-  - [ ] `dist/`
-  - [ ] `.venv/` and `venv/`
-  - [ ] `__pycache__/`
-  - [ ] `*.min.js`
-  - [ ] `*.min.css`
-  - [ ] Lock files (package-lock.json, Cargo.lock, etc.)
-- [ ] Create `should_skip_file()` helper function
-- [ ] Add unit tests for skip patterns
+- [x] Add common skip patterns to walker:
+  - [x] `node_modules/`
+  - [x] `target/` (Rust)
+  - [x] `.git/`
+  - [x] `.svn/`
+  - [x] `build/`
+  - [x] `dist/`
+  - [x] `.venv/` and `venv/`
+  - [x] `__pycache__/`
+  - [x] `*.min.js`
+  - [x] `*.min.css`
+  - [x] Lock files (package-lock.json, Cargo.lock, etc.)
+- [x] Create `should_skip_file()` helper function
+- [x] Add unit tests for skip patterns
 
 ### 6.3 Generated File Detection (src/walker.rs)
 - [ ] Create `GeneratedFileDetector` struct
