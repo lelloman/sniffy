@@ -63,6 +63,14 @@ pub struct Cli {
     /// Disable colored output
     #[arg(long)]
     pub no_color: bool,
+
+    /// Exclude files/directories matching glob pattern (can be used multiple times)
+    #[arg(short = 'e', long = "exclude", value_name = "PATTERN")]
+    pub exclude: Vec<String>,
+
+    /// Include only files matching glob pattern (can be used multiple times)
+    #[arg(short = 'i', long = "include", value_name = "PATTERN")]
+    pub include: Vec<String>,
 }
 
 impl Cli {
@@ -230,6 +238,8 @@ mod tests {
             format: "table".to_string(),
             jobs: 0,
             no_color: false,
+            exclude: vec![],
+            include: vec![],
         };
 
         assert!(cli.should_use_color());
@@ -253,6 +263,8 @@ mod tests {
             format: "table".to_string(),
             jobs: 0,
             no_color: true,
+            exclude: vec![],
+            include: vec![],
         };
 
         assert!(!cli.should_use_color());
@@ -276,6 +288,8 @@ mod tests {
             format: "table".to_string(),
             jobs: 0,
             no_color: false,
+            exclude: vec![],
+            include: vec![],
         };
 
         assert!(!cli.should_use_color());
@@ -302,6 +316,8 @@ mod tests {
             format: "table".to_string(),
             jobs: 0,
             no_color: false,
+            exclude: vec![],
+            include: vec![],
         };
 
         // Empty NO_COLOR means colors should be enabled

@@ -3,6 +3,7 @@
 //! This module implements recursive directory traversal,
 //! respecting .gitignore patterns and skip rules.
 
+use ignore::overrides::OverrideBuilder;
 use ignore::WalkBuilder;
 use std::path::{Path, PathBuf};
 
@@ -10,6 +11,8 @@ use std::path::{Path, PathBuf};
 pub struct DirectoryWalker {
     paths: Vec<PathBuf>,
     hidden: bool,
+    exclude: Vec<String>,
+    include: Vec<String>,
 }
 
 /// Check if a file should be skipped based on common patterns.
@@ -67,12 +70,26 @@ impl DirectoryWalker {
         Self {
             paths: vec![path.as_ref().to_path_buf()],
             hidden: false,
+            exclude: Vec::new(),
+            include: Vec::new(),
         }
     }
 
     /// Set whether to include hidden files and directories.
     pub fn hidden(mut self, hidden: bool) -> Self {
         self.hidden = hidden;
+        self
+    }
+
+    /// Set exclude patterns (glob patterns to exclude).
+    pub fn exclude(mut self, patterns: Vec<String>) -> Self {
+        self.exclude = patterns;
+        self
+    }
+
+    /// Set include patterns (glob patterns to include, overrides excludes).
+    pub fn include(mut self, patterns: Vec<String>) -> Self {
+        self.include = patterns;
         self
     }
 
@@ -89,6 +106,26 @@ impl DirectoryWalker {
         // Add additional paths if any
         for path in &self.paths[1..] {
             builder.add(path);
+        }
+
+        // Build overrides for include/exclude patterns
+        let mut override_builder = OverrideBuilder::new(&self.paths[0]);
+
+        // Add exclude patterns (as negative globs)
+        for pattern in &self.exclude {
+            // The ignore crate uses ! prefix for negation (include),
+            // so exclude patterns are added as-is
+            let _ = override_builder.add(&format!("!{}", pattern));
+        }
+
+        // Add include patterns (these take precedence)
+        // When include patterns are specified, we want to only match those patterns
+        for pattern in &self.include {
+            let _ = override_builder.add(pattern);
+        }
+
+        if let Ok(overrides) = override_builder.build() {
+            builder.overrides(overrides);
         }
 
         builder
@@ -436,5 +473,86 @@ mod tests {
         assert!(!should_skip_file(Path::new("/project/app.js")));
         assert!(!should_skip_file(Path::new("/project/style.css")));
         assert!(!should_skip_file(Path::new("/project/Cargo.toml")));
+    }
+
+    #[test]
+    fn test_exclude_pattern() {
+        let temp_dir = TempDir::new().unwrap();
+
+        // Create various files
+        fs::File::create(temp_dir.path().join("main.rs")).unwrap();
+        fs::File::create(temp_dir.path().join("lib.rs")).unwrap();
+        fs::File::create(temp_dir.path().join("test.js")).unwrap();
+        fs::File::create(temp_dir.path().join("app.js")).unwrap();
+
+        let walker = DirectoryWalker::new(temp_dir.path()).exclude(vec!["*.js".to_string()]);
+        let files: Vec<PathBuf> = walker.walk().collect();
+
+        // Should only find .rs files
+        assert_eq!(files.len(), 2);
+        assert!(files.iter().any(|p| p.ends_with("main.rs")));
+        assert!(files.iter().any(|p| p.ends_with("lib.rs")));
+        assert!(!files.iter().any(|p| p.ends_with(".js")));
+    }
+
+    #[test]
+    fn test_include_pattern() {
+        let temp_dir = TempDir::new().unwrap();
+
+        // Create various files
+        fs::File::create(temp_dir.path().join("main.rs")).unwrap();
+        fs::File::create(temp_dir.path().join("lib.rs")).unwrap();
+        fs::File::create(temp_dir.path().join("test.js")).unwrap();
+        fs::File::create(temp_dir.path().join("app.py")).unwrap();
+
+        let walker = DirectoryWalker::new(temp_dir.path()).include(vec!["*.rs".to_string()]);
+        let files: Vec<PathBuf> = walker.walk().collect();
+
+        // Should only find .rs files
+        assert_eq!(files.len(), 2);
+        assert!(files.iter().any(|p| p.ends_with("main.rs")));
+        assert!(files.iter().any(|p| p.ends_with("lib.rs")));
+    }
+
+    #[test]
+    fn test_multiple_include_patterns() {
+        let temp_dir = TempDir::new().unwrap();
+
+        // Create various files
+        fs::File::create(temp_dir.path().join("main.rs")).unwrap();
+        fs::File::create(temp_dir.path().join("test.js")).unwrap();
+        fs::File::create(temp_dir.path().join("app.py")).unwrap();
+        fs::File::create(temp_dir.path().join("style.css")).unwrap();
+
+        let walker = DirectoryWalker::new(temp_dir.path())
+            .include(vec!["*.rs".to_string(), "*.js".to_string()]);
+        let files: Vec<PathBuf> = walker.walk().collect();
+
+        // Should find .rs and .js files
+        assert_eq!(files.len(), 2);
+        assert!(files.iter().any(|p| p.ends_with("main.rs")));
+        assert!(files.iter().any(|p| p.ends_with("test.js")));
+    }
+
+    #[test]
+    fn test_exclude_directory_pattern() {
+        let temp_dir = TempDir::new().unwrap();
+
+        // Create directories
+        let src_dir = temp_dir.path().join("src");
+        let tests_dir = temp_dir.path().join("tests");
+        fs::create_dir(&src_dir).unwrap();
+        fs::create_dir(&tests_dir).unwrap();
+
+        // Create files
+        fs::File::create(src_dir.join("main.rs")).unwrap();
+        fs::File::create(tests_dir.join("test_main.rs")).unwrap();
+
+        let walker = DirectoryWalker::new(temp_dir.path()).exclude(vec!["tests/**".to_string()]);
+        let files: Vec<PathBuf> = walker.walk().collect();
+
+        // Should only find files in src
+        assert_eq!(files.len(), 1);
+        assert!(files[0].ends_with("main.rs"));
     }
 }

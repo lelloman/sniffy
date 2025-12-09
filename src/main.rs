@@ -41,7 +41,10 @@ fn main() {
             eprintln!("Scanning: {}", path.display());
         }
 
-        let walker = DirectoryWalker::new(path).hidden(cli.hidden);
+        let walker = DirectoryWalker::new(path)
+            .hidden(cli.hidden)
+            .exclude(cli.exclude.clone())
+            .include(cli.include.clone());
         all_files.extend(walker.walk());
     }
 
@@ -213,7 +216,13 @@ fn run_history_mode(cli: &Cli) {
         _ => {
             // Default to table format
             let use_color = cli.should_use_color();
-            let output = OutputFormatter::format_history(&stats, &time_series, period_label, limit, use_color);
+            let output = OutputFormatter::format_history(
+                &stats,
+                &time_series,
+                period_label,
+                limit,
+                use_color,
+            );
             println!("{}", output);
         }
     }

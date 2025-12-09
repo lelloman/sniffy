@@ -1,11 +1,11 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use sniffy::classifier::{classify_file, ClassifierState, LineClassifier};
 use sniffy::language::{LanguageDetector, LANGUAGES};
 use sniffy::processor::FileProcessor;
 use sniffy::stats::{FileStats, ProjectStats};
+use std::io::Write;
 use std::path::Path;
 use tempfile::NamedTempFile;
-use std::io::Write;
 
 fn bench_line_classification(c: &mut Criterion) {
     let rust_lang = LANGUAGES.iter().find(|l| l.name == "Rust").unwrap();
@@ -124,10 +124,14 @@ fn bench_language_detection(c: &mut Criterion) {
     ];
 
     for (path, lang_name) in test_paths {
-        group.bench_with_input(BenchmarkId::from_parameter(lang_name), &path, |b, path_str| {
-            let path = Path::new(path_str);
-            b.iter(|| detector.detect_from_path(black_box(path)))
-        });
+        group.bench_with_input(
+            BenchmarkId::from_parameter(lang_name),
+            &path,
+            |b, path_str| {
+                let path = Path::new(path_str);
+                b.iter(|| detector.detect_from_path(black_box(path)))
+            },
+        );
     }
 
     group.finish();
